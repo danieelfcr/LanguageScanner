@@ -30,9 +30,10 @@
         {
             this.label1 = new System.Windows.Forms.Label();
             this.btnOpenFile = new System.Windows.Forms.Button();
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.tBFilePath = new System.Windows.Forms.TextBox();
             this.btnAnalyze = new System.Windows.Forms.Button();
             this.rTBResult = new System.Windows.Forms.RichTextBox();
+            this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.SuspendLayout();
             // 
             // label1
@@ -55,14 +56,15 @@
             this.btnOpenFile.TabIndex = 1;
             this.btnOpenFile.Text = "Open file";
             this.btnOpenFile.UseVisualStyleBackColor = false;
+            this.btnOpenFile.Click += new System.EventHandler(this.btnOpenFile_Click);
             // 
-            // textBox1
+            // tBFilePath
             // 
-            this.textBox1.Location = new System.Drawing.Point(405, 189);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.ReadOnly = true;
-            this.textBox1.Size = new System.Drawing.Size(597, 43);
-            this.textBox1.TabIndex = 2;
+            this.tBFilePath.Location = new System.Drawing.Point(405, 189);
+            this.tBFilePath.Name = "tBFilePath";
+            this.tBFilePath.ReadOnly = true;
+            this.tBFilePath.Size = new System.Drawing.Size(597, 43);
+            this.tBFilePath.TabIndex = 2;
             // 
             // btnAnalyze
             // 
@@ -85,6 +87,10 @@
             this.rTBResult.TabIndex = 4;
             this.rTBResult.Text = "";
             // 
+            // openFileDialog1
+            // 
+            this.openFileDialog1.FileName = "openFileDialog1";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(15F, 37F);
@@ -93,7 +99,7 @@
             this.ClientSize = new System.Drawing.Size(1144, 784);
             this.Controls.Add(this.rTBResult);
             this.Controls.Add(this.btnAnalyze);
-            this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.tBFilePath);
             this.Controls.Add(this.btnOpenFile);
             this.Controls.Add(this.label1);
             this.Name = "Form1";
@@ -107,8 +113,9 @@
 
         private Label label1;
         private Button btnOpenFile;
-        private TextBox textBox1;
+        private TextBox tBFilePath;
         private Button btnAnalyze;
         private RichTextBox rTBResult;
+        private OpenFileDialog openFileDialog1;
     }
 }
