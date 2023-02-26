@@ -18,7 +18,6 @@ namespace Scanner
                 string filePath = openFileDialog1.FileName;
                 tBFilePath.Text = filePath;
                 btnAnalyze.Enabled = true;
-
             }
         }
     }
