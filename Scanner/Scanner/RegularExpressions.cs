@@ -25,5 +25,24 @@ namespace Scanner
 
         //ERROR RE-----------------------------------------------------------------------------------------------------------
         Regex errorRE = new Regex("\\s*([A-Z]*ERROR\\s*=\\s*[1-9][0-9]*\\s*)+");
+
+        /// <summary>
+        /// The Proc idea is to validate at least the section where the error come form. First getting error in the entire mainRegex, so then evaluate the individual RE for each section.
+        /// </summary>
+        /// <param name="file">It refers to the text contain in the file</param>
+        public void GetSectionError(string file)
+        {
+            string error = "";
+            //If is true, means that se actions SECTION do not match with the text, here exist an error who knows where at he moment
+            if (!actionsRE.IsMatch(file))
+            {
+                //Error in this sections
+                //Still thinkig how to express the error here
+            }
+            if (!errorRE.IsMatch(file))
+            {
+                error += "Se ha definido incorrectamente algún error";
+            }
+        }
     }
 }
