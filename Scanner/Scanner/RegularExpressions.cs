@@ -31,17 +31,25 @@ namespace Scanner
         {
             string error = "";
             //If is true, means that se actions SECTION do not match with the text, here exist an error who knows where at he moment
-            if (!setsRE.IsMatch(file)) { error += "La sección actions contiene un error.\n"; }
-            if (!actionsRE.IsMatch(file)) { error += "La sección de ACTIONS contiene un error.\n"; }
-            if (!errorRE.IsMatch(file)) { error += "Se ha definido incorrectamente algún error.\n"; }
+            if (!setsRE.IsMatch(file)) { error += "Sets section has an error.\n"; }
+            if (!tokensRE.IsMatch(file)) { error += "Tokens section has an error.\n"; }
+            if (!actionsRE.IsMatch(file)) { error += "Actions section has an error.\n"; }
+            if (!errorRE.IsMatch(file)) { error += "Errors section has a syntaxis error.\n"; }
             return error;
         }
 
         public bool evaluateGrammar(string text)
         {
-            Regex GrammarRegex = new Regex("^("+setsRE.ToString() + tokensRE.ToString() + actionsRE.ToString() + errorRE.ToString()+")$");
-            //Regex GrammarRegex = new Regex("^(" + tokensRE.ToString() + ")$");
-            return GrammarRegex.IsMatch(text);
+            TimeSpan timeOut = new TimeSpan(0, 0, 3);
+            Regex GrammarRegex = new Regex("^(" + setsRE.ToString() + tokensRE.ToString() + actionsRE.ToString() + errorRE.ToString() + ")$", RegexOptions.None, timeOut);
+            try
+            {
+                return GrammarRegex.IsMatch(text);
+            }
+            catch(RegexMatchTimeoutException ex)
+            {
+                return false;
+            }
         }
     }
 }
