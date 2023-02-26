@@ -77,6 +77,7 @@
             this.btnAnalyze.TabIndex = 3;
             this.btnAnalyze.Text = "Analyze grammar";
             this.btnAnalyze.UseVisualStyleBackColor = false;
+            this.btnAnalyze.Click += new System.EventHandler(this.btnAnalyze_Click);
             // 
             // rTBResult
             // 

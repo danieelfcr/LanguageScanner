@@ -22,6 +22,7 @@ namespace Scanner
                 btnAnalyze.Enabled = true;
                 readText(filePath);
                 MessageBox.Show("File was uploaded succesfully!");
+                rTBResult.Text = text;
             }
         }
 
@@ -31,18 +32,30 @@ namespace Scanner
             {
                 text = "";
                 StreamReader sr = new StreamReader(filePath);
-                string line = sr.ReadLine();
-                while (line != null)
-                {
-                    text += line;
-                    line = sr.ReadLine();
-                }
+                text = sr.ReadToEnd();
                 sr.Close();
             }
             catch(Exception e)
             {
                 MessageBox.Show("An error has occured \nError: " + e.Message);
             }
+        }
+
+        private void btnAnalyze_Click(object sender, EventArgs e)
+        {
+            RegularExpressions RegularEx = new RegularExpressions();
+            if (RegularEx.evaluateGrammar(text))
+            {
+                MessageBox.Show("Somos geniales");
+                rTBResult.BackColor = Color.Green;
+            }
+            else
+            {
+                MessageBox.Show("No somos geniales");
+                rTBResult.BackColor = Color.Red;
+            }
+
+
         }
     }
 }
