@@ -51,7 +51,7 @@ namespace Scanner
             }
             else
             {
-                MessageBox.Show("ERROR, gramática no bien definida:\n" + RegularEx.GetSectionError(text));
+                MessageBox.Show("ERROR, gramática no bien definida:\n" + RegularEx.GetSectionError(text, rTBResult));
                 rTBResult.BackColor = Color.Red;
             }
 
