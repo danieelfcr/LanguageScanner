@@ -1,0 +1,75 @@
+
+
+
+
+
+
+
+	SETS
+	
+
+
+
+
+LETRA   = 'A'..'Z'+'a'..'z'+'_'
+
+
+
+				DIGITO  = '0'..'9'			+ 'X'..'A'
+
+
+	CHARSET = CHR(32)..CHR(254)
+
+				
+
+
+
+									TOKENS
+
+
+
+
+
+
+
+
+
+
+	TOKEN 1= DIGITO DIGITO *
+												TOKEN 2='"' CHARSET '"'|''' CHARSET '''
+	TOKEN  4  = '='
+			TOKEN  5  = '<''>'
+	TOKEN  6  = '<'
+					TOKEN  7  = '>'
+	TOKEN  8  = '>''='
+	TOKEN  9  = '<''='
+	TOKEN  10  = '+'
+
+	TOKEN  53  =				 ':''='
+	TOKEN 3= LETRA (		DIGITO )*   		{ 							RESERVADAS() 	} 
+
+
+
+
+
+
+
+										ACTIONS 
+					RESERVADAS() 
+												{
+	18 = 	'PROGRAM'
+				19 = 'INCLUDE'
+	20 = 'CONST'
+	21         = 'TYPE'
+				22 = 'VAR'
+
+	32 = 'TO'
+	33 = 'WHILE'
+	34 = 'DO'
+						35 = 'EXIT'
+	36 = 'END'
+														37 = 'CASE'
+	38                          = 'BREAK'
+	39 = 'DOWNTO'
+ }
+MAMATENGOUNERROR = 54 DIOSSALVAMEDELERROR = 666

@@ -1,0 +1,30 @@
+SETS
+	LETRA 					  = 'A'..'Z'			+ 'a'..'z'
+	DIGITO  = '0'..'9' + 'S'..'X'
+	CHARSET = CHR(32)..CHR(254)
+													 TOKENS
+	TOKEN 1= DIGITO DIGITO *
+	TOKEN 2='"' CHARSET '"'|''' CHARSET '''
+	TOKEN  4  = '='
+
+
+	TOKEN  53  = ':''='
+	TOKEN 3				= LETRA (					 LETRA | DIGITO )*   {			 RESERVADAS()  } 
+ACTIONS 
+RESERVADAS() 
+{
+	18 = 'PROGRAM'
+19 = 'INCLUDE'20 = 'CONST' 534253245 = 'TYPE'
+	22 = 'VAR'
+	23 = 'RECORD'
+	24 = 'ARRAY'
+
+
+
+					35 = 'EXIT'
+	36 = 'END'
+	37 = 'CASE'
+	38 = 'BREAK'
+	39 = 'DOWNTO'
+}
+NOQUIEROOTROERROR = 54567567

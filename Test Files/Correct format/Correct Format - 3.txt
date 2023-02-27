@@ -1,0 +1,41 @@
+SETS
+					LETRA   = 'A'..'Z'
+CHARSET = CHR(32)..CHR(254)
+									  CHARSET = CHR(1)..CHR(100)
+	COSAS = 'B'..'X'+			'1'..'8'
+
+
+
+	TOKENS
+						TOKEN  1	 =	 DIGITO DIGITO *
+TOKEN 2='"' CHARSET '"'|''' CHARSET '''
+
+
+		TOKEN  50  = '.''.'
+
+
+
+ACTIONS 
+RESERVADAS() 
+{
+	18 	= 			'PROGRAM'
+	19 	= 									'INCLUDE'
+	20 = 'CONST'
+	21  = 						'TYPE'
+	22 =   'VAR'
+	23 =   	'RECORD'
+	24 = 					'ARRAY'
+	25 = 'OF'
+	26 = 'PROCEDURE'
+	27 = 'FUNCTION'
+	28 = 'IF'
+	29 = 'THEN'
+
+	6443 = 'END'
+	37 = 'CASE'
+	38 = 'BREAK'
+	543 = 'DOWNTO'
+}
+ERROR = 54
+LOLERROR = 21
+XDERROR = 12 MMDDERROR = 24
