@@ -23,6 +23,7 @@ namespace Scanner
                 readText(filePath);
                 MessageBox.Show("File was uploaded succesfully!");
                 rTBResult.Text = text;
+                rTBResult.BackColor = Color.White;
             }
         }
 
@@ -46,12 +47,12 @@ namespace Scanner
             RegularExpressions RegularEx = new RegularExpressions();
             if (RegularEx.evaluateGrammar(text))
             {
-                MessageBox.Show("Somos geniales");
+                MessageBox.Show("Grammar is correctly defined");
                 rTBResult.BackColor = Color.Green;
             }
             else
             {
-                MessageBox.Show("ERROR, gramática no bien definida:\n" + RegularEx.GetSectionError(text, rTBResult));
+                MessageBox.Show("ERROR, grammar is not correctly defined:\n" + RegularEx.GetSectionError(text, rTBResult));
                 rTBResult.BackColor = Color.Red;
             }
 
