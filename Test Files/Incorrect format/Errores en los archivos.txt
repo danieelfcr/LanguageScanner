@@ -1,0 +1,3 @@
+ERRORES DE LOS ARCHIVOS
+Incorrect Format 5: el SET DIGITO tiene un punto demás y el mismo de INCORRECTO 1
+Incorrect Format 6: ERROR está mal escrito y sections el TOKEN 5
