@@ -40,9 +40,10 @@
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Arial", 16F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point);
-            this.label1.Location = new System.Drawing.Point(325, 66);
+            this.label1.Location = new System.Drawing.Point(173, 36);
+            this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(453, 55);
+            this.label1.Size = new System.Drawing.Size(253, 32);
             this.label1.TabIndex = 0;
             this.label1.Text = "Language Scanner";
             // 
@@ -50,9 +51,10 @@
             // 
             this.btnOpenFile.BackColor = System.Drawing.SystemColors.ScrollBar;
             this.btnOpenFile.Font = new System.Drawing.Font("Arial", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.btnOpenFile.Location = new System.Drawing.Point(118, 184);
+            this.btnOpenFile.Location = new System.Drawing.Point(63, 99);
+            this.btnOpenFile.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.btnOpenFile.Name = "btnOpenFile";
-            this.btnOpenFile.Size = new System.Drawing.Size(256, 57);
+            this.btnOpenFile.Size = new System.Drawing.Size(137, 31);
             this.btnOpenFile.TabIndex = 1;
             this.btnOpenFile.Text = "Open file";
             this.btnOpenFile.UseVisualStyleBackColor = false;
@@ -60,10 +62,11 @@
             // 
             // tBFilePath
             // 
-            this.tBFilePath.Location = new System.Drawing.Point(405, 189);
+            this.tBFilePath.Location = new System.Drawing.Point(216, 102);
+            this.tBFilePath.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.tBFilePath.Name = "tBFilePath";
             this.tBFilePath.ReadOnly = true;
-            this.tBFilePath.Size = new System.Drawing.Size(597, 43);
+            this.tBFilePath.Size = new System.Drawing.Size(320, 27);
             this.tBFilePath.TabIndex = 2;
             // 
             // btnAnalyze
@@ -71,9 +74,10 @@
             this.btnAnalyze.BackColor = System.Drawing.SystemColors.ScrollBar;
             this.btnAnalyze.Enabled = false;
             this.btnAnalyze.Font = new System.Drawing.Font("Arial", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.btnAnalyze.Location = new System.Drawing.Point(420, 294);
+            this.btnAnalyze.Location = new System.Drawing.Point(224, 159);
+            this.btnAnalyze.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.btnAnalyze.Name = "btnAnalyze";
-            this.btnAnalyze.Size = new System.Drawing.Size(256, 57);
+            this.btnAnalyze.Size = new System.Drawing.Size(137, 31);
             this.btnAnalyze.TabIndex = 3;
             this.btnAnalyze.Text = "Analyze grammar";
             this.btnAnalyze.UseVisualStyleBackColor = false;
@@ -81,10 +85,12 @@
             // 
             // rTBResult
             // 
-            this.rTBResult.Location = new System.Drawing.Point(118, 397);
+            this.rTBResult.BackColor = System.Drawing.Color.White;
+            this.rTBResult.Location = new System.Drawing.Point(63, 215);
+            this.rTBResult.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.rTBResult.Name = "rTBResult";
             this.rTBResult.ReadOnly = true;
-            this.rTBResult.Size = new System.Drawing.Size(878, 279);
+            this.rTBResult.Size = new System.Drawing.Size(470, 153);
             this.rTBResult.TabIndex = 4;
             this.rTBResult.Text = "";
             // 
@@ -94,15 +100,16 @@
             // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(15F, 37F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FloralWhite;
-            this.ClientSize = new System.Drawing.Size(1144, 784);
+            this.ClientSize = new System.Drawing.Size(610, 424);
             this.Controls.Add(this.rTBResult);
             this.Controls.Add(this.btnAnalyze);
             this.Controls.Add(this.tBFilePath);
             this.Controls.Add(this.btnOpenFile);
             this.Controls.Add(this.label1);
+            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.Name = "Form1";
             this.Text = "Language Scanner";
             this.ResumeLayout(false);
