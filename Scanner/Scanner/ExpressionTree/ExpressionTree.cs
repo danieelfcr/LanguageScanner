@@ -27,7 +27,10 @@ namespace Scanner.ExpressionTree
 
         public ExpressionTree(string regularExpression)
         {
-
+            leafCount = 0;
+            
+            firstLastMatrix = new string[nodeCount, 4];
+            followTable = new Dictionary<string, List<int>>();
         }
 
     }
