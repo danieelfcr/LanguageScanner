@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Text.RegularExpressions;
 using System.Security.Permissions;
 
+
 namespace Scanner
 {
     internal class RegularExpressions
@@ -99,5 +100,6 @@ namespace Scanner
             re += "#";
             return re;
         }
+
     }
 }
