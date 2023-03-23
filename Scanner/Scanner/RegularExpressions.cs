@@ -72,6 +72,11 @@ namespace Scanner
             }
         }
 
+        /// <summary>
+        /// function to get te regular expression to build the expression tree, using line by line method
+        /// </summary>
+        /// <param name="rich">Richtextbox that contains the grammar and it can be access line by line</param>
+        /// <returns></returns>
         public string getRegularExpression(RichTextBox rich)
         {
             List<string> tokens = new List<string>();
@@ -82,10 +87,17 @@ namespace Scanner
                 {
                     auxLine = rich.Lines[i];
                     auxLine = tokenRE.Replace(auxLine, string.Empty);
+                    auxLine = new Regex("{\\s*(\\w+\\s*\\(\\s*\\)\\s*)+}").Replace(auxLine, string.Empty); //expression to delete calls in tokens
                     tokens.Add(auxLine.Trim());
                 }
             }
-            return String.Join('|', tokens.ToArray());
+            //create re with extended Symbol
+            string re = "";
+            re += "(";
+            re += string.Join('|', tokens.ToArray());
+            re += ")";
+            re += "#";
+            return re;
         }
     }
 }
