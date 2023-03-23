@@ -4,7 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Text.RegularExpressions;
-using Scanner.ExpressionTree;
+using System.Security.Permissions;
+
 
 namespace Scanner
 {
@@ -19,6 +20,7 @@ namespace Scanner
 
         //TOKENS RE---------------------------------------------------------------------------------------------------------
         Regex tokensRE = new Regex("\\s*TOKENS\\s*\\n(\\s*TOKEN( |\\t)*([1-9][0-9]*)( |\\t)*=( |\\t)*(((( |\\t)*{( |\\t)*([A-Z]+( |\\t)*\\(( |\\t)*\\)( |\\t)*)+( |\\t)*}( |\\t)*)|(([A-Z]+( |\\t)*(\\*|\\+|\\?)?)|('\\S'( |\\t)*(\\*|\\+|\\?)?))|(( |\\t)*(([A-Z]+( |\\t)*(\\*|\\+|\\?)?)|('\\S'( |\\t)*(\\*|\\+|\\?)?))+( |\\t)*\\|( |\\t)*(([A-Z]+( |\\t)*(\\*|\\+|\\?)?)|('\\S'( |\\t)*(\\*|\\+|\\?)?))( |\\t)*(\\|( |\\t)*(([A-Z]+( |\\t)*(\\*|\\+|\\?)?)|('\\S'( |\\t)*(\\*|\\+|\\?)?)( |\\t)*)+)*)|(\\(( |\\t)*(((([A-Z]+( |\\t)*(\\*|\\+|\\?)?)|('\\S'( |\\t)*(\\*|\\+|\\?)?))( |\\t)*)|(( |\\t)*(([A-Z]+( |\\t)*(\\*|\\+|\\?)?)|('\\S'( |\\t)*(\\*|\\+|\\?)?))+( |\\t)*\\|( |\\t)*(([A-Z]+( |\\t)*(\\*|\\+|\\?)?)|('\\S'( |\\t)*(\\*|\\+|\\?)?))( |\\t)*(\\|( |\\t)*(([A-Z]+( |\\t)*(\\*|\\+|\\?)?)|('\\S'( |\\t)*(\\*|\\+|\\?)?)( |\\t)*)+)*)|(\\(( |\\t)*(((([A-Z]+( |\\t)*(\\*|\\+|\\?)?)|('\\S'( |\\t)*(\\*|\\+|\\?)?))( |\\t)*)|(( |\t)*(([A-Z]+( |\\t)*(\\*|\\+|\\?)?)|('\\S'( |\\t)*(\\*|\\+|\\?)?))+( |\\t)*\\|( |\\t)*(([A-Z]+( |\\t)*(\\*|\\+|\\?)?)|('\\S'( |\\t)*(\\*|\\+|\\?)?))( |\\t)*(\\|( |\\t)*(([A-Z]+( |\\t)*(\\*|\\+|\\?)?)|('\\S'( |\\t)*(\\*|\\+|\\?)?)( |\\t)*)+)*))+\\)( |\\t)*(\\*|\\+|\\?)?))+\\)( |\\t)*(\\*|\\+|\\?)?))( |\\t)*)+)+\\s*");
+        Regex tokenRE = new Regex("TOKEN( |\\t)*([1-9][0-9]*)( |\\t)*="); //Expresión regular utilizada para evaluar si una línea corresponde a un token
 
         //ACTIONS RE---------------------------------------------------------------------------------------------------------
         Regex actionsRE = new Regex("ACTIONS\\s*RESERVADAS\\s*\\(\\s*\\)\\s*{\\s*(([0-9]|([1-9][0-9]*))\\s*=\\s*'([A-Z]|[a-z])+'\\s*)+}\\s*(([A-Z]|[a-z])+\\s*\\(\\s*\\)\\s*{\\s*(([0-9]|([1-9][0-9]*))\\s*=\\s*'([A-Z]|[a-z])+'\\s*)+}\\s*)*");
@@ -32,6 +34,7 @@ namespace Scanner
         /// The Proc idea is to validate at least the section where the error come form. First getting error in the entire mainRegex, so then evaluate the individual RE for each section.
         /// </summary>
         /// <param name="file">It refers to the text contain in the file</param>
+        /// <param name="rich">It refers to the visual object that contains the information</param>
         public string GetSectionError(string file, RichTextBox rich)
         {
             
@@ -46,7 +49,6 @@ namespace Scanner
                     else
                         break;
                 }
-
                 if (!setsREVerify.IsMatch(setsAux))
                     error += "Sets section has an error.\n"; 
             }
@@ -69,6 +71,34 @@ namespace Scanner
                 error += "Tokens section has an error.\n";
                 return false;
             }
+        }
+
+        /// <summary>
+        /// function to get te regular expression to build the expression tree, using line by line method
+        /// </summary>
+        /// <param name="rich">Richtextbox that contains the grammar and it can be access line by line</param>
+        /// <returns></returns>
+        public string getRegularExpression(RichTextBox rich)
+        {
+            List<string> tokens = new List<string>();
+            string auxLine;
+            for (int i = 0; i < rich.Lines.Count(); i++)
+            {
+                if (tokenRE.IsMatch(rich.Lines[i]))
+                {
+                    auxLine = rich.Lines[i];
+                    auxLine = tokenRE.Replace(auxLine, string.Empty);
+                    auxLine = new Regex("{\\s*(\\w+\\s*\\(\\s*\\)\\s*)+}").Replace(auxLine, string.Empty); //expression to delete calls in tokens
+                    tokens.Add(auxLine.Trim());
+                }
+            }
+            //create re with extended Symbol
+            string re = "";
+            re += "(";
+            re += string.Join('|', tokens.ToArray());
+            re += ")";
+            re += "#";
+            return re;
         }
     }
 }
