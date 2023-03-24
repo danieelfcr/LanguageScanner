@@ -107,12 +107,47 @@ namespace Scanner
             Regex letter = new Regex("[a-zA-Z]");           //No Terminal Symbols expresion
             string auxChar;
             string nextChar;
-            string lastChar;
+            string lastChar = "";
             for (int i = 0; i < expression.Length; i++)
             {
                 auxChar = expression[i].ToString();
 
-                if (auxChar == " " | auxChar == "\t")
+                if (auxChar == "?" | auxChar == "+" | auxChar == "*" | auxChar == "|" | auxChar == "(" | auxChar == ")")
+                {
+                    Node auxNode;
+                    if (lastChar == ")" && auxChar == "(")
+                    {
+                        auxNode = new Node(".", null, null, false);
+                        queueExpression.Enqueue(auxNode);
+                    }
+                    auxNode = new Node(auxChar, null, null, false);
+                    queueExpression.Enqueue(auxNode);
+                }
+                else if (letter.IsMatch(auxChar))               //No Terminal Symbol case
+                {
+                    string tempSymbol = "";
+                    while (letter.IsMatch(auxChar) && i < expression.Length)
+                    {
+                        tempSymbol += auxChar;
+                        i++;
+                        if (i < expression.Length)
+                        {
+                            auxChar = expression[i].ToString();
+                        }
+                    }
+                    queueExpression.Enqueue(new Node(tempSymbol, null, null, false));
+                }
+                else if (auxChar == "'")                    //Terminal symbol case
+                {
+                    string tempSymbol = "";
+                    tempSymbol += auxChar;
+                    tempSymbol += expression[i + 1].ToString();
+                    tempSymbol += expression[i + 2].ToString();
+                    queueExpression.Enqueue(new Node(tempSymbol, null, null, false));
+                    i += 2;
+                }
+                //A white space was found
+                else
                 {
                     if ((i + 1) < expression.Length)
                     {
@@ -122,29 +157,6 @@ namespace Scanner
                         {
                             //evaluar si es un terminal o no terminal, parénteis o un agrupador
                         }
-                    }
-                }
-                else if (auxChar == "?" | auxChar == "+" | auxChar == "*" | auxChar == "|" | auxChar == "(" | auxChar == ")")
-                {
-                    Node auxNode = new Node(auxChar, null, null, false);
-                    if ()
-                    {
-
-                    }
-                    queueExpression.Enqueue(auxNode);
-                }
-                else if (letter.IsMatch(auxChar))
-                {
-                    string tempSymbol = "";
-                    while (letter.IsMatch(auxChar))
-                    {
-                        tempSymbol += auxChar;
-                        i++;
-                        if (i < expression.Length)
-                        {
-                            auxChar = expression[i].ToString();
-                        }
-                         
                     }
                 }
             }
