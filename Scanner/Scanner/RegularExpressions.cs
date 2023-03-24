@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Text.RegularExpressions;
 using System.Security.Permissions;
-
+using Scanner.ExpressionTree;
 
 namespace Scanner
 {
@@ -78,7 +78,7 @@ namespace Scanner
         /// </summary>
         /// <param name="rich">Richtextbox that contains the grammar and it can be access line by line</param>
         /// <returns></returns>
-        public string getRegularExpression(RichTextBox rich)
+        public string GetRegularExpression(RichTextBox rich)
         {
             List<string> tokens = new List<string>();
             string auxLine;
@@ -99,6 +99,56 @@ namespace Scanner
             re += ")";
             re += "#";
             return re;
+        }
+
+        public Queue<Node> GetQueueExpression(string expression)
+        {
+            Queue<Node> queueExpression = new Queue<Node>();
+            Regex letter = new Regex("[a-zA-Z]");           //No Terminal Symbols expresion
+            string auxChar;
+            string nextChar;
+            string lastChar;
+            for (int i = 0; i < expression.Length; i++)
+            {
+                auxChar = expression[i].ToString();
+
+                if (auxChar == " " | auxChar == "\t")
+                {
+                    if ((i + 1) < expression.Length)
+                    {
+                        nextChar = expression[i + 1].ToString();
+
+                        if (nextChar != "" | nextChar != "\t")
+                        {
+                            //evaluar si es un terminal o no terminal, parénteis o un agrupador
+                        }
+                    }
+                }
+                else if (auxChar == "?" | auxChar == "+" | auxChar == "*" | auxChar == "|" | auxChar == "(" | auxChar == ")")
+                {
+                    Node auxNode = new Node(auxChar, null, null, false);
+                    if ()
+                    {
+
+                    }
+                    queueExpression.Enqueue(auxNode);
+                }
+                else if (letter.IsMatch(auxChar))
+                {
+                    string tempSymbol = "";
+                    while (letter.IsMatch(auxChar))
+                    {
+                        tempSymbol += auxChar;
+                        i++;
+                        if (i < expression.Length)
+                        {
+                            auxChar = expression[i].ToString();
+                        }
+                         
+                    }
+                }
+            }
+            return queueExpression;
         }
 
     }
