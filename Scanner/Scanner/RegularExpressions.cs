@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Text.RegularExpressions;
 using System.Security.Permissions;
-
+using Scanner.ExpressionTree;
 
 namespace Scanner
 {
@@ -78,7 +78,7 @@ namespace Scanner
         /// </summary>
         /// <param name="rich">Richtextbox that contains the grammar and it can be access line by line</param>
         /// <returns></returns>
-        public string getRegularExpression(RichTextBox rich)
+        public string GetRegularExpression(RichTextBox rich)
         {
             List<string> tokens = new List<string>();
             string auxLine;
@@ -97,9 +97,92 @@ namespace Scanner
             re += "(";
             re += string.Join('|', tokens.ToArray());
             re += ")";
-            re += "#";
+            re += "'#'";
             return re;
         }
 
+        public List<Node> GetListExpression(string expression)
+        {
+            List<Node> listExpression = new List<Node>();
+            Node auxNode;
+            string auxChar;
+            string tempSymbol = "";
+            Regex letter = new Regex("[a-zA-Z]");               //No Terminal Symbols expresion
+
+            for (int i = 0; i < expression.Length; i++)
+            {
+                //First step, create the node with the actual read from expression
+                auxChar = expression[i].ToString();
+
+                if (auxChar != " " && auxChar != "\t")
+                {
+                    if (letter.IsMatch(auxChar))               //No Terminal Symbol case
+                    {
+                        tempSymbol = ""; //Reset temp variable
+                        while (letter.IsMatch(auxChar) && i < expression.Length)
+                        {
+                            tempSymbol += auxChar;
+                            i++;
+                            if (i < expression.Length)
+                            {
+                                auxChar = expression[i].ToString();
+                            }
+                        }
+                        i--;
+                        auxNode = new Node(tempSymbol, 1);
+                    }
+                    else if (auxChar == "'")                        //Terminal symbol case
+                    {
+                        tempSymbol = "";    //Reset temp value
+                        tempSymbol += auxChar;
+                        tempSymbol += expression[i + 1].ToString();
+                        tempSymbol += expression[i + 2].ToString();
+
+                        i += 2;
+                        auxNode = new Node(tempSymbol, 0);
+                    }
+                    else //("?" | "+" | "*" | "|" | "(" | ")")    //Operator case
+                    {
+                        int auxKind;
+                        if (auxChar == "(")
+                        {
+                            auxKind = 3;
+                        }
+                        else if (auxChar == ")")
+                        {
+                            auxKind = 4;
+                        }
+                        else
+                        {
+                            auxKind = 2;
+                        }
+                        auxNode = new Node(auxChar, auxKind);
+                    }
+
+                    //SecondEstep, evaluate if is necessary to add a concatenation   0 - terminal, 1 - no terminal, 2 - (+,*,|,?), 3 = (, 4 = )
+
+                    if (listExpression.Count > 0)
+                    {
+                        int concatFlag = 0;
+                        Node preNode = listExpression[listExpression.Count - 1];
+
+                        if (auxNode.kindSymbol == 0 | auxNode.kindSymbol == 1 | auxNode.kindSymbol == 3)
+                        {
+                            if (preNode.kindSymbol != 3)
+                            {
+                                if (preNode.symbol != "|")
+                                {
+                                    listExpression.Add(new Node(".", 2));
+                                }
+                            }
+                        }
+                    }
+
+                    //Add actual read symbol to the list
+                    listExpression.Add(auxNode);
+                }
+            }
+            return listExpression;
+        }
     }
 }
