@@ -51,17 +51,17 @@ namespace Scanner.ExpressionTree
                     {
                         case 0:
                             //terminal symbol
-                            if (nextToken.kindSymbol == 0 | nextToken.kindSymbol == 1 | nextToken.kindSymbol == 3)
+                            if (nextToken.kindSymbol == 0 || nextToken.kindSymbol == 1 || nextToken.kindSymbol == 3)
                                 needsConcat = true;
                             break;
                         case 1:
                             //no terminal symbol
-                            if (nextToken.kindSymbol == 0 | nextToken.kindSymbol == 1 | nextToken.kindSymbol == 3)
+                            if (nextToken.kindSymbol == 0 || nextToken.kindSymbol == 1 || nextToken.kindSymbol == 3)
                                 needsConcat = true;
                             break;
                         case 2:
                             //operator
-                            if (nextToken.kindSymbol == 0 | nextToken.kindSymbol == 1 | nextToken.kindSymbol == 3)
+                            if (nextToken.kindSymbol == 0 || nextToken.kindSymbol == 1 || nextToken.kindSymbol == 3)
                                 needsConcat = true;
                             break;
                         case 3:
@@ -70,7 +70,7 @@ namespace Scanner.ExpressionTree
                             break;
                         case 4:
                             //closed parenthesis
-                            if (nextToken.kindSymbol == 0 | nextToken.kindSymbol == 1 | nextToken.kindSymbol == 3)
+                            if (nextToken.kindSymbol == 0 || nextToken.kindSymbol == 1 || nextToken.kindSymbol == 3)
                                 needsConcat = true;
                             break;
                         default:
@@ -103,10 +103,111 @@ namespace Scanner.ExpressionTree
             while(tokenSource.Count > 0)
             {
                 Node actualToken = tokenSource.Dequeue();
+                if (actualToken.kindSymbol == 0 || actualToken.kindSymbol == 1)
+                {
+                    //terminal / no terminal
+                    Node st = actualToken;
+                    S.Push(st);    //push in stack of trees
+                }
+                else if (actualToken.kindSymbol == 3)
+                {
+                    //open parenthesis
+                    Node token = actualToken;
+                    T.Push(token);    //push in stack of tokens
+                }
+                else if (actualToken.kindSymbol == 4)
+                {
+                    //closed parenthesis
+                    while (T.Count > 0 && T.Peek().kindSymbol != 3)
+                    {
+                        if (T.Count == 0)
+                        {
+                            MessageBox.Show("Error, missing operands");
+                            break;
+                        }
+                        if (S.Count < 2)
+                        {
+                            MessageBox.Show("Error, missing operands");
+                            break;
+                        }
+                            
+                        
+                        Node temp = T.Pop();
+                        temp.right = S.Pop();
+                        temp.left = S.Pop();
+                        S.Push(temp);
+                    }
 
+                    T.Pop();
+                }
+                else if (actualToken.kindSymbol == 2)   //is an operator token?
+                {
+                    
+                    if (actualToken.symbol == "*" || actualToken.symbol == "+" || actualToken.symbol == "?") 
+                    {
+                        //Unary operator
+                        Node op = actualToken;
+                        if (S.Count < 0)
+                        {
+                            MessageBox.Show("Error, missing operands");
+                            break;
+                        }
+
+                        op.left = S.Pop();
+                        S.Push(op);
+                    }
+                    else if (T.Count != 0 && T.Peek().kindSymbol != 3 && (operatorHierarchy[actualToken.symbol] <= operatorHierarchy[T.Peek().symbol]))
+                    {
+                        Node temp = T.Pop();
+                        if (S.Count < 2)
+                        {
+                            MessageBox.Show("Error, missing operands");
+                            break;
+                        }
+
+                        temp.right = S.Pop();
+                        temp.left = S.Pop();
+                        S.Push(temp);
+                    }
+                    else
+                    {
+                        T.Push(actualToken);
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Error, unknown operator");
+                }
             }
 
-        }
+            while (T.Count > 0)
+            {
+                Node temp = T.Pop();
+                if (temp.kindSymbol == 3)
+                {
+                    MessageBox.Show("Error, missing operands");
+                    break;
+                }
+                if (S.Count < 2)
+                {
+                    MessageBox.Show("Error, missing operands");
+                    break;
+                }
 
+                temp.right = S.Pop();
+                temp.left = S.Pop();
+                S.Push(temp);
+            }
+
+            if (S.Count != 1)
+            {
+                MessageBox.Show("Error, missing operands");
+                return null;
+            }
+            else
+            {
+                return S.Pop();
+            }
+        }
     }
 }
