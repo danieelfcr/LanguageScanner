@@ -1,3 +1,4 @@
+using Scanner.ExpressionTree;
 using System.IO;
 namespace Scanner
 {
@@ -45,7 +46,6 @@ namespace Scanner
         private void btnAnalyze_Click(object sender, EventArgs e)
         {
             RegularExpressions RegularEx = new RegularExpressions();
-            string RE = RegularEx.GetRegularExpression(rTBResult);
             if (RegularEx.evaluateGrammar(text))
             {
                 MessageBox.Show("Grammar is correctly defined");

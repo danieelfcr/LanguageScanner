@@ -97,71 +97,92 @@ namespace Scanner
             re += "(";
             re += string.Join('|', tokens.ToArray());
             re += ")";
-            re += "#";
+            re += "'#'";
             return re;
         }
 
-        public Queue<Node> GetQueueExpression(string expression)
+        public List<Node> GetListExpression(string expression)
         {
-            Queue<Node> queueExpression = new Queue<Node>();
-            Regex letter = new Regex("[a-zA-Z]");           //No Terminal Symbols expresion
+            List<Node> listExpression = new List<Node>();
+            Node auxNode;
             string auxChar;
-            string nextChar;
-            string lastChar = "";
+            string tempSymbol = "";
+            Regex letter = new Regex("[a-zA-Z]");               //No Terminal Symbols expresion
+
             for (int i = 0; i < expression.Length; i++)
             {
+                //First step, create the node with the actual read from expression
                 auxChar = expression[i].ToString();
 
-                if (auxChar == "?" | auxChar == "+" | auxChar == "*" | auxChar == "|" | auxChar == "(" | auxChar == ")")
+                if (auxChar != " " && auxChar != "\t")
                 {
-                    Node auxNode;
-                    if (lastChar == ")" && auxChar == "(")
+                    if (letter.IsMatch(auxChar))               //No Terminal Symbol case
                     {
-                        auxNode = new Node(".", null, null, false);
-                        queueExpression.Enqueue(auxNode);
+                        tempSymbol = ""; //Reset temp variable
+                        while (letter.IsMatch(auxChar) && i < expression.Length)
+                        {
+                            tempSymbol += auxChar;
+                            i++;
+                            if (i < expression.Length)
+                            {
+                                auxChar = expression[i].ToString();
+                            }
+                        }
+                        i--;
+                        auxNode = new Node(tempSymbol, 1);
                     }
-                    auxNode = new Node(auxChar, null, null, false);
-                    queueExpression.Enqueue(auxNode);
-                }
-                else if (letter.IsMatch(auxChar))               //No Terminal Symbol case
-                {
-                    string tempSymbol = "";
-                    while (letter.IsMatch(auxChar) && i < expression.Length)
+                    else if (auxChar == "'")                        //Terminal symbol case
                     {
+                        tempSymbol = "";    //Reset temp value
                         tempSymbol += auxChar;
-                        i++;
-                        if (i < expression.Length)
-                        {
-                            auxChar = expression[i].ToString();
-                        }
-                    }
-                    queueExpression.Enqueue(new Node(tempSymbol, null, null, false));
-                }
-                else if (auxChar == "'")                    //Terminal symbol case
-                {
-                    string tempSymbol = "";
-                    tempSymbol += auxChar;
-                    tempSymbol += expression[i + 1].ToString();
-                    tempSymbol += expression[i + 2].ToString();
-                    queueExpression.Enqueue(new Node(tempSymbol, null, null, false));
-                    i += 2;
-                }
-                //A white space was found
-                else
-                {
-                    if ((i + 1) < expression.Length)
-                    {
-                        nextChar = expression[i + 1].ToString();
+                        tempSymbol += expression[i + 1].ToString();
+                        tempSymbol += expression[i + 2].ToString();
 
-                        if (nextChar != "" | nextChar != "\t")
+                        i += 2;
+                        auxNode = new Node(tempSymbol, 0);
+                    }
+                    else //("?" | "+" | "*" | "|" | "(" | ")")    //Operator case
+                    {
+                        int auxKind;
+                        if (auxChar == "(")
                         {
-                            //evaluar si es un terminal o no terminal, parénteis o un agrupador
+                            auxKind = 3;
+                        }
+                        else if (auxChar == ")")
+                        {
+                            auxKind = 4;
+                        }
+                        else
+                        {
+                            auxKind = 2;
+                        }
+                        auxNode = new Node(auxChar, auxKind);
+                    }
+
+                    //SecondEstep, evaluate if is necessary to add a concatenation   0 - terminal, 1 - no terminal, 2 - (+,*,|,?), 3 = (, 4 = )
+
+                    if (listExpression.Count > 0)
+                    {
+                        int concatFlag = 0;
+                        Node preNode = listExpression[listExpression.Count - 1];
+
+                        if (auxNode.kindSymbol == 0 | auxNode.kindSymbol == 1 | auxNode.kindSymbol == 3)
+                        {
+                            if (preNode.kindSymbol != 3)
+                            {
+                                if (preNode.symbol != "|")
+                                {
+                                    listExpression.Add(new Node(".", 2));
+                                }
+                            }
                         }
                     }
+
+                    //Add actual read symbol to the list
+                    listExpression.Add(auxNode);
                 }
             }
-            return queueExpression;
+            return listExpression;
         }
-
     }
 }
