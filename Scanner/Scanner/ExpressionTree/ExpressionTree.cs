@@ -28,7 +28,7 @@ namespace Scanner.ExpressionTree
 
         public ExpressionTree(Queue<Node> tokenSource)
         {
-            leafCount = 0;
+            leafCount = 1;
             Root = CreateTree(tokenSource);
             firstLastMatrix = new string[nodeCount, 4];
             followTable = new Dictionary<string, List<int>>();
@@ -193,6 +193,8 @@ namespace Scanner.ExpressionTree
                 {
                     //terminal / no terminal
                     Node st = actualToken;
+                    st.leafNumber = leafCount;
+                    leafCount++;
                     S.Push(st);    //push in stack of trees
                 }
                 else if (actualToken.kindSymbol == 3)
