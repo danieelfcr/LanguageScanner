@@ -19,9 +19,9 @@ namespace Scanner.ExpressionTree
 
         public Node left { get; set; }
 
-        private List<int> firstList;
+        public List<int> firstList;
 
-        private List<int> lastList;
+        public List<int> lastList;
 
         public bool nullable = false;
 
