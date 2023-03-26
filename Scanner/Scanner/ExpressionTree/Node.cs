@@ -27,6 +27,7 @@ namespace Scanner.ExpressionTree
 
         public int leafNumber;
 
+
         /// <summary>
         /// Constructor to create a new node where set default values and key values
         /// </summary>
