@@ -52,7 +52,7 @@
             this.btnOpenFile.BackColor = System.Drawing.SystemColors.ScrollBar;
             this.btnOpenFile.Font = new System.Drawing.Font("Arial", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.btnOpenFile.Location = new System.Drawing.Point(63, 99);
-            this.btnOpenFile.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnOpenFile.Margin = new System.Windows.Forms.Padding(2);
             this.btnOpenFile.Name = "btnOpenFile";
             this.btnOpenFile.Size = new System.Drawing.Size(137, 31);
             this.btnOpenFile.TabIndex = 1;
@@ -63,7 +63,7 @@
             // tBFilePath
             // 
             this.tBFilePath.Location = new System.Drawing.Point(216, 102);
-            this.tBFilePath.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tBFilePath.Margin = new System.Windows.Forms.Padding(2);
             this.tBFilePath.Name = "tBFilePath";
             this.tBFilePath.ReadOnly = true;
             this.tBFilePath.Size = new System.Drawing.Size(320, 27);
@@ -75,7 +75,7 @@
             this.btnAnalyze.Enabled = false;
             this.btnAnalyze.Font = new System.Drawing.Font("Arial", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.btnAnalyze.Location = new System.Drawing.Point(224, 159);
-            this.btnAnalyze.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnAnalyze.Margin = new System.Windows.Forms.Padding(2);
             this.btnAnalyze.Name = "btnAnalyze";
             this.btnAnalyze.Size = new System.Drawing.Size(137, 31);
             this.btnAnalyze.TabIndex = 3;
@@ -87,9 +87,8 @@
             // 
             this.rTBResult.BackColor = System.Drawing.Color.White;
             this.rTBResult.Location = new System.Drawing.Point(63, 215);
-            this.rTBResult.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.rTBResult.Margin = new System.Windows.Forms.Padding(2);
             this.rTBResult.Name = "rTBResult";
-            this.rTBResult.ReadOnly = true;
             this.rTBResult.Size = new System.Drawing.Size(470, 153);
             this.rTBResult.TabIndex = 4;
             this.rTBResult.Text = "";
@@ -109,7 +108,7 @@
             this.Controls.Add(this.tBFilePath);
             this.Controls.Add(this.btnOpenFile);
             this.Controls.Add(this.label1);
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "Form1";
             this.Text = "Language Scanner";
             this.ResumeLayout(false);

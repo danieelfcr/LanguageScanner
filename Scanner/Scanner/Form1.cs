@@ -1,5 +1,6 @@
 using Scanner.ExpressionTree;
 using System.IO;
+
 namespace Scanner
 {
     public partial class Form1 : Form
@@ -46,10 +47,15 @@ namespace Scanner
         private void btnAnalyze_Click(object sender, EventArgs e)
         {
             RegularExpressions RegularEx = new RegularExpressions();
+           
             if (RegularEx.evaluateGrammar(text))
             {
                 MessageBox.Show("Grammar is correctly defined");
                 rTBResult.BackColor = Color.Green;
+
+                Queue<Node> tokensQueue = RegularEx.GetQueueExpression(RegularEx.GetRegularExpression(rTBResult));
+                ExpressionTree.ExpressionTree expressionTree = new ExpressionTree.ExpressionTree(tokensQueue);
+                
             }
             else
             {
