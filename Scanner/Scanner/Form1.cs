@@ -46,6 +46,7 @@ namespace Scanner
         private void btnAnalyze_Click(object sender, EventArgs e)
         {
             RegularExpressions RegularEx = new RegularExpressions();
+            RegularEx.GetQueueExpression(RegularEx.GetRegularExpression(rTBResult));
             if (RegularEx.evaluateGrammar(text))
             {
                 MessageBox.Show("Grammar is correctly defined");
