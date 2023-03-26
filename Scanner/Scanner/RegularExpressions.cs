@@ -101,7 +101,7 @@ namespace Scanner
             return re;
         }
 
-        public List<Node> GetListExpression(string expression)
+        public Queue<Node> GetQueueExpression(string expression)
         {
             List<Node> listExpression = new List<Node>();
             Node auxNode;
@@ -182,7 +182,14 @@ namespace Scanner
                     listExpression.Add(auxNode);
                 }
             }
-            return listExpression;
+
+            Queue<Node> queueExpression = new Queue<Node>();
+            foreach (Node node in listExpression)
+            {
+                queueExpression.Enqueue(node);
+            }
+
+            return queueExpression;
         }
     }
 }
