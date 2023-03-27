@@ -51,9 +51,14 @@ namespace Scanner.ExpressionTree
                     case 1:
                         AssignFirstLast(node);
                         break;
+                    case 2:
+                        AssignFollows(node);
+                        break;
                 }
             }
         }
+
+        
 
         //Llamar a este metodo para iniciar operaciones. "OP" es la operacion que se desea realizar "Nullable, First/Last, Follow"
         public void PostOrder(int op)
@@ -182,7 +187,41 @@ namespace Scanner.ExpressionTree
             return;
         }
 
-        
+        void AssignFollows(Node node)
+        {
+            //If node is not a leaf then check what symbol it has
+            if (node.left != null || node.right != null)
+            {
+                switch (node.symbol)
+                {
+                    //The only symbols that cannot be part of the algorithm are '|' and '?' 
+                    case ".":
+                        CombinationFollow(node.left.lastList, node.right.firstList);
+                        break;
+                    case "*":
+                        CombinationFollow(node.left.lastList, node.left.firstList);
+                        break;
+                    case "+":
+                        CombinationFollow(node.left.lastList, node.left.firstList);
+                        break;          
+                }
+            }
+        }
+
+        private void CombinationFollow(List<int> c1, List<int> c2)
+        {
+            //iteration of all elements in c1 
+            for (int i = 0; i < c1.Count; i++)
+            {
+                //iteration of all elements in c2
+                for (int j = 0; j < c2.Count; j++)
+                {
+                    followDictionary[c1[i]].insertFollow(c2[j]);
+                }
+            }
+        }
+
+
 
         private Node CreateTree(Queue<Node> tokenSource)
         {
