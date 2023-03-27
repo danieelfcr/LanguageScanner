@@ -12,6 +12,7 @@ namespace Scanner.ExpressionTree
         public Node Root;
         public int leafCount;
         public int nodeCount;
+        public List<string> symbols { get; set; }           //Variable to contain the present symbols in the grammar
         public Dictionary<int, Follow> followDictionary; //key = follow id (symbol id) value = follow object
 
         public string[,] firstLastMatrix;
