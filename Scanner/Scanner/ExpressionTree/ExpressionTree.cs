@@ -28,10 +28,155 @@ namespace Scanner.ExpressionTree
 
         public ExpressionTree(Queue<Node> tokenSource)
         {
-            leafCount = 0;
+            leafCount = 1;
             Root = CreateTree(tokenSource);
             firstLastMatrix = new string[nodeCount, 4];
             followTable = new Dictionary<string, List<int>>();
+        }
+
+        void PostOrder(Node node, int op)
+        {
+            if (node != null)
+            {
+                PostOrder(node.left, op);
+                PostOrder(node.right, op);
+                switch (op)
+                {
+                    case 0:
+                        AssignNullable(node);
+                        break;
+                    case 1:
+                        AssignFirstLast(node);
+                        break;
+                }
+            }
+        }
+
+        //Llamar a este metodo para iniciar operaciones. "OP" es la operacion que se desea realizar "Nullable, First/Last, Follow"
+        public void PostOrder(int op)
+        {
+            PostOrder(this.Root, op);
+        }
+
+        void AssignNullable(Node node)
+        {
+            //If node is leaf, it is not nullable
+            if (node.left == null && node.right == null)
+            {
+                node.nullable = false;
+                return;
+            }
+            else
+            {
+                switch (node.symbol)
+                {
+                    case "|":
+                        if (node.left.nullable == true || node.right.nullable == true)
+                        {
+                            node.nullable = true;
+                        }
+                        break;
+
+                    case ".":
+                        if (node.left.nullable == true && node.right.nullable == true)
+                        {
+                            node.nullable = true;
+                        }
+                        break;
+
+                    case "*":
+                        node.nullable = true;
+                        break;
+
+                    case "+":
+                        if (node.left.nullable == true)
+                        {
+                            node.nullable = true;
+                        }
+                        break;
+
+                    case "?":
+                        node.nullable = true;
+                        break;
+
+                    default:
+                        node.nullable = false;
+                        break;
+                }
+            }
+            return;
+        }
+        void AssignFirstLast(Node node)
+        {
+            //If node is leaf, assign its number as first
+            if (node.left == null && node.right == null)
+            {
+                //First
+                node.firstList.Add(node.leafNumber);
+                //Last
+                node.lastList.Add(node.leafNumber);
+                return;
+            }
+            else
+            {
+                switch (node.symbol)
+                {
+                    case "|":
+                        //First
+                        node.firstList.AddRange(node.left.firstList);
+                        node.firstList.AddRange(node.right.firstList);
+                        //Last
+                        node.lastList.AddRange(node.left.lastList);
+                        node.lastList.AddRange(node.right.lastList);
+                        break;
+
+                    case ".":
+                        //First
+                        if (node.left.nullable == true)
+                        {
+                            node.firstList.AddRange(node.left.firstList);
+                            node.firstList.AddRange(node.right.firstList);
+                        }
+                        else
+                        {
+                            node.firstList.AddRange(node.left.firstList);
+                        }
+
+                        //Last
+                        if (node.right.nullable == true)
+                        {
+                            node.lastList.AddRange(node.left.lastList);
+                            node.lastList.AddRange(node.right.lastList);
+                        }
+                        else
+                        {
+                            node.lastList.AddRange(node.right.lastList);
+                        }
+                        break;
+
+                    case "*":
+                        //First
+                        node.firstList.AddRange(node.left.firstList);
+                        //Last
+                        node.lastList.AddRange(node.left.lastList);
+                        break;
+
+                    case "+":
+                        //First
+                        node.firstList.AddRange(node.left.firstList);
+                        //Last
+                        node.lastList.AddRange(node.left.lastList);
+                        break;
+
+                    case "?":
+                        //First
+                        node.firstList.AddRange(node.left.firstList);
+                        //Last
+                        node.lastList.AddRange(node.left.lastList);
+                        break;
+                }
+            }
+            return;
         }
 
         
@@ -48,6 +193,8 @@ namespace Scanner.ExpressionTree
                 {
                     //terminal / no terminal
                     Node st = actualToken;
+                    st.leafNumber = leafCount;
+                    leafCount++;
                     S.Push(st);    //push in stack of trees
                 }
                 else if (actualToken.kindSymbol == 3)
