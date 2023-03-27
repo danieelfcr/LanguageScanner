@@ -12,6 +12,8 @@ namespace Scanner.ExpressionTree
         public Node Root;
         public int leafCount;
         public int nodeCount;
+        public Dictionary<int, Follow> followDictionary; //key = follow id (symbol id) value = follow object
+
         public string[,] firstLastMatrix;
         private Dictionary<string, List<int>> followTable; //symbol, follow list
         
@@ -29,6 +31,7 @@ namespace Scanner.ExpressionTree
         public ExpressionTree(Queue<Node> tokenSource)
         {
             leafCount = 1;
+            followDictionary = new Dictionary<int, Follow>();
             Root = CreateTree(tokenSource);
             firstLastMatrix = new string[nodeCount, 4];
             followTable = new Dictionary<string, List<int>>();
@@ -194,6 +197,10 @@ namespace Scanner.ExpressionTree
                     //terminal / no terminal
                     Node st = actualToken;
                     st.leafNumber = leafCount;
+
+                    //creation of a new Follow object
+                    Follow follow = new Follow(st.symbol);
+                    followDictionary.Add(leafCount, follow);
                     leafCount++;
                     S.Push(st);    //push in stack of trees
                 }
