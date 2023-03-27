@@ -19,8 +19,11 @@ namespace Scanner.ExpressionTree
         }
         public void insertFollow(int follow)
         {
-            followList.Add(follow);
-            followList.Sort();
+            if (!followList.Contains(follow))
+            {
+                followList.Add(follow);
+                followList.Sort();
+            }
         }
 
     }
