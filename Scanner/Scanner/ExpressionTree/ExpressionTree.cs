@@ -356,31 +356,23 @@ namespace Scanner.ExpressionTree
         //public Dictionary<string, TransitionSummary> transitions { get; set; }
         public void MakeTransitions()
         {
-            List<string> auxTransitionList = new List<string>();
-            int auxCount = 0;
-
-            //cointer of all the symbols to be evaluated
-            TransitionSummary baseTransition = new TransitionSummary();       
-
-            //asign to a base transition the symbol to be evaluated
-            foreach (string symbol in symbols)
-            {
-                baseTransition.Transition.Add(symbol,new List<int>());
-            }
-
             //Validate if exist values to make the process
-            if (Root.firstList.Count > 0)
+            if (Root != null && Root.firstList.Count > 0)
             {
                 //Create the first state, the first of the tree
                 string temp = string.Join(',',Root.firstList.ToArray());
-                baseTransition.State = Root.firstList;
-                transitions.Add(temp, baseTransition);
+                TransitionSummary auxTransition = new TransitionSummary(symbols);
+                auxTransition.State = Root.firstList;
+                transitions.Add(temp, auxTransition);
 
-                auxTransitionList.Add(temp);
+                Queue<string> auxTransitionQueue = new Queue<string>(); //Queue to set a transactions queue where the unworked states are in
+                auxTransitionQueue.Enqueue(temp);
 
                 //Iterative process with each state
-                while (auxTransitionList.Count > auxCount)
+                while (auxTransitionQueue.Count > 0)
                 {
+                    temp = auxTransitionQueue.Peek();
+                    //Process to put all the elements of transition for one state in the determine state
                     foreach (int value in transitions[temp].State)
                     {
                         string auxActualSymbol = followDictionary[value].symbol;
@@ -395,11 +387,32 @@ namespace Scanner.ExpressionTree
                                 transitions[temp].Transition[auxActualSymbol].Add(x);
                             }
                         }
-                        transitions[temp].Transition[auxActualSymbol].Sort();
+                        //Validation the the sort is not making in the extended symbol from the expression
+                        if (transitions[temp].Transition.ContainsKey(auxActualSymbol))
+                        {
+                            transitions[temp].Transition[auxActualSymbol].Sort();
+                        }
                     }
-                    auxCount++;
-                }
 
+                    //Process to evaluate if exist new state form the before process en added to a queue to be operated
+                    foreach (var value in transitions[temp].State)
+                    {
+                        string S = followDictionary[value].symbol;
+                        if (transitions[temp].Transition.ContainsKey(S))
+                        {
+                            string key = string.Join(',', transitions[temp].Transition[S].ToArray());
+                            if (!transitions.ContainsKey(key))
+                            {
+                                TransitionSummary newTransition = new TransitionSummary(symbols);
+                                newTransition.State = transitions[temp].Transition[S];
+                                transitions.Add(key, newTransition);
+                                auxTransitionQueue.Enqueue(key);
+                            }
+                        }
+                    }
+
+                    auxTransitionQueue.Dequeue();
+                }
             }
         }
     }
