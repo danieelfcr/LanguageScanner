@@ -29,14 +29,14 @@
         private void InitializeComponent()
         {
             this.dGVFirstLastNullable = new System.Windows.Forms.DataGridView();
-            this.dGVFollow = new System.Windows.Forms.DataGridView();
-            this.dGVTransitions = new System.Windows.Forms.DataGridView();
             this.Column1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dGVFollow = new System.Windows.Forms.DataGridView();
             this.Column5 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column6 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dGVTransitions = new System.Windows.Forms.DataGridView();
             ((System.ComponentModel.ISupportInitialize)(this.dGVFirstLastNullable)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dGVFollow)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dGVTransitions)).BeginInit();
@@ -55,27 +55,6 @@
             this.dGVFirstLastNullable.RowTemplate.Height = 25;
             this.dGVFirstLastNullable.Size = new System.Drawing.Size(384, 229);
             this.dGVFirstLastNullable.TabIndex = 0;
-            // 
-            // dGVFollow
-            // 
-            this.dGVFollow.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dGVFollow.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.Column5,
-            this.Column6});
-            this.dGVFollow.Location = new System.Drawing.Point(441, 12);
-            this.dGVFollow.Name = "dGVFollow";
-            this.dGVFollow.RowTemplate.Height = 25;
-            this.dGVFollow.Size = new System.Drawing.Size(384, 229);
-            this.dGVFollow.TabIndex = 1;
-            // 
-            // dGVTransitions
-            // 
-            this.dGVTransitions.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dGVTransitions.Location = new System.Drawing.Point(22, 256);
-            this.dGVTransitions.Name = "dGVTransitions";
-            this.dGVTransitions.RowTemplate.Height = 25;
-            this.dGVTransitions.Size = new System.Drawing.Size(803, 229);
-            this.dGVTransitions.TabIndex = 2;
             // 
             // Column1
             // 
@@ -101,6 +80,18 @@
             this.Column4.Name = "Column4";
             this.Column4.ReadOnly = true;
             // 
+            // dGVFollow
+            // 
+            this.dGVFollow.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dGVFollow.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.Column5,
+            this.Column6});
+            this.dGVFollow.Location = new System.Drawing.Point(441, 12);
+            this.dGVFollow.Name = "dGVFollow";
+            this.dGVFollow.RowTemplate.Height = 25;
+            this.dGVFollow.Size = new System.Drawing.Size(384, 229);
+            this.dGVFollow.TabIndex = 1;
+            // 
             // Column5
             // 
             this.Column5.HeaderText = "Symbol";
@@ -112,6 +103,16 @@
             this.Column6.HeaderText = "Follow";
             this.Column6.Name = "Column6";
             this.Column6.ReadOnly = true;
+            // 
+            // dGVTransitions
+            // 
+            this.dGVTransitions.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dGVTransitions.Location = new System.Drawing.Point(22, 256);
+            this.dGVTransitions.Name = "dGVTransitions";
+            this.dGVTransitions.RowHeadersVisible = false;
+            this.dGVTransitions.RowTemplate.Height = 25;
+            this.dGVTransitions.Size = new System.Drawing.Size(803, 229);
+            this.dGVTransitions.TabIndex = 2;
             // 
             // AutomatonData
             // 
