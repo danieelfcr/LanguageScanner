@@ -13,11 +13,15 @@ namespace Scanner.ExpressionTree
         public int leafCount;
         public int nodeCount;
         public List<string> symbols { get; set; }           //Variable to contain the present symbols in the grammar
+        
         public Dictionary<int, Follow> followDictionary; //key = follow id (symbol id) value = follow object
 
         public string[,] firstLastMatrix;
+
         private Dictionary<string, List<int>> followTable; //symbol, follow list
-        
+
+        public Dictionary<string, TransitionSummary> transitions { get; set; }
+
         private Dictionary<string, int> operatorHierarchy = new Dictionary<string, int>() //symbol, number in the hierarchy
         {
             {"|", 1},
@@ -36,6 +40,7 @@ namespace Scanner.ExpressionTree
             Root = CreateTree(tokenSource);
             firstLastMatrix = new string[nodeCount, 4];
             followTable = new Dictionary<string, List<int>>();
+            transitions = new Dictionary<string, TransitionSummary>();
         }
 
         void PostOrder(Node node, int op)
@@ -58,7 +63,6 @@ namespace Scanner.ExpressionTree
                 }
             }
         }
-
         
 
         //Llamar a este metodo para iniciar operaciones. "OP" es la operacion que se desea realizar "Nullable, First/Last, Follow"
@@ -345,6 +349,57 @@ namespace Scanner.ExpressionTree
             else
             {
                 return S.Pop();
+            }
+        }
+
+        //public Dictionary<int, Follow> followDictionary; //key = follow id (symbol id) value = follow object
+        //public Dictionary<string, TransitionSummary> transitions { get; set; }
+        public void MakeTransitions()
+        {
+            List<string> auxTransitionList = new List<string>();
+            int auxCount = 0;
+
+            //cointer of all the symbols to be evaluated
+            TransitionSummary baseTransition = new TransitionSummary();       
+
+            //asign to a base transition the symbol to be evaluated
+            foreach (string symbol in symbols)
+            {
+                baseTransition.Transition.Add(symbol,new List<int>());
+            }
+
+            //Validate if exist values to make the process
+            if (Root.firstList.Count > 0)
+            {
+                //Create the first state, the first of the tree
+                string temp = string.Join(',',Root.firstList.ToArray());
+                baseTransition.State = Root.firstList;
+                transitions.Add(temp, baseTransition);
+
+                auxTransitionList.Add(temp);
+
+                //Iterative process with each state
+                while (auxTransitionList.Count > auxCount)
+                {
+                    foreach (int value in transitions[temp].State)
+                    {
+                        string auxActualSymbol = followDictionary[value].symbol;
+                        List<int> auxActualFollow = followDictionary[value].followList;
+
+                        //Foreach of the elments of the follow try to insert to the list in transitions
+                        foreach (int x in auxActualFollow)
+                        {
+                            //The element is added only if doesn't exist
+                            if (!transitions[temp].Transition[auxActualSymbol].Contains(x))
+                            {
+                                transitions[temp].Transition[auxActualSymbol].Add(x);
+                            }
+                        }
+                        transitions[temp].Transition[auxActualSymbol].Sort();
+                    }
+                    auxCount++;
+                }
+
             }
         }
     }

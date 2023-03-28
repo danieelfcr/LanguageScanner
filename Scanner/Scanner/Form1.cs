@@ -57,9 +57,11 @@ namespace Scanner
 
                 Queue<Node> tokensQueue = RegularEx.GetQueueExpression(RegularEx.GetRegularExpression(rTBResult), ref symbols);
                 ExpressionTree.ExpressionTree expressionTree = new ExpressionTree.ExpressionTree(tokensQueue);
+                expressionTree.symbols = symbols;
                 expressionTree.PostOrder(0); //assign nullable
                 expressionTree.PostOrder(1); //assign first and last
                 expressionTree.PostOrder(2); //assign follows
+                expressionTree.MakeTransitions();
             }
             else
             {
