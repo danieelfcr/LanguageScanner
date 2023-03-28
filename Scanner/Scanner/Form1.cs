@@ -52,12 +52,16 @@ namespace Scanner
             {
                 MessageBox.Show("Grammar is correctly defined");
                 rTBResult.BackColor = Color.Green;
+                
+                List<string> symbols = new List<string>();
 
-                Queue<Node> tokensQueue = RegularEx.GetQueueExpression(RegularEx.GetRegularExpression(rTBResult));
+                Queue<Node> tokensQueue = RegularEx.GetQueueExpression(RegularEx.GetRegularExpression(rTBResult), ref symbols);
                 ExpressionTree.ExpressionTree expressionTree = new ExpressionTree.ExpressionTree(tokensQueue);
+                expressionTree.symbols = symbols;
                 expressionTree.PostOrder(0); //assign nullable
                 expressionTree.PostOrder(1); //assign first and last
                 expressionTree.PostOrder(2); //assign follows
+                expressionTree.MakeTransitions();
             }
             else
             {

@@ -101,7 +101,7 @@ namespace Scanner
             return re;
         }
 
-        public Queue<Node> GetQueueExpression(string expression)
+        public Queue<Node> GetQueueExpression(string expression, ref List<string> symbols)
         {
             List<Node> listExpression = new List<Node>();
             Node auxNode;
@@ -130,6 +130,10 @@ namespace Scanner
                         }
                         i--;
                         auxNode = new Node(tempSymbol, 1);
+                        if (!symbols.Contains(auxNode.symbol) && auxNode.symbol != "'#'")
+                        {
+                            symbols.Add(auxNode.symbol);
+                        }
                     }
                     else if (auxChar == "'")                        //Terminal symbol case
                     {
@@ -140,6 +144,10 @@ namespace Scanner
 
                         i += 2;
                         auxNode = new Node(tempSymbol, 0);
+                        if (!symbols.Contains(auxNode.symbol) && auxNode.symbol != "'#'")
+                        {
+                            symbols.Add(auxNode.symbol);
+                        }
                     }
                     else //("?" | "+" | "*" | "|" | "(" | ")")    //Operator case
                     {
@@ -159,7 +167,7 @@ namespace Scanner
                         auxNode = new Node(auxChar, auxKind);
                     }
 
-                    //SecondEstep, evaluate if is necessary to add a concatenation   0 - terminal, 1 - no terminal, 2 - (+,*,|,?), 3 = (, 4 = )
+                    //SecondStep, evaluate if is necessary to add a concatenation   0 - terminal, 1 - no terminal, 2 - (+,*,|,?), 3 = (, 4 = )
 
                     if (listExpression.Count > 0)
                     {
@@ -182,6 +190,7 @@ namespace Scanner
                     listExpression.Add(auxNode);
                 }
             }
+
 
             Queue<Node> queueExpression = new Queue<Node>();
             foreach (Node node in listExpression)

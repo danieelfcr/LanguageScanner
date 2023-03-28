@@ -12,11 +12,16 @@ namespace Scanner.ExpressionTree
         public Node Root;
         public int leafCount;
         public int nodeCount;
+        public List<string> symbols { get; set; }           //Variable to contain the present symbols in the grammar
+        
         public Dictionary<int, Follow> followDictionary; //key = follow id (symbol id) value = follow object
 
         public string[,] firstLastMatrix;
+
         private Dictionary<string, List<int>> followTable; //symbol, follow list
-        
+
+        public Dictionary<string, TransitionSummary> transitions { get; set; }
+
         private Dictionary<string, int> operatorHierarchy = new Dictionary<string, int>() //symbol, number in the hierarchy
         {
             {"|", 1},
@@ -35,6 +40,7 @@ namespace Scanner.ExpressionTree
             Root = CreateTree(tokenSource);
             firstLastMatrix = new string[nodeCount, 4];
             followTable = new Dictionary<string, List<int>>();
+            transitions = new Dictionary<string, TransitionSummary>();
         }
 
         void PostOrder(Node node, int op)
@@ -57,7 +63,6 @@ namespace Scanner.ExpressionTree
                 }
             }
         }
-
         
 
         //Llamar a este metodo para iniciar operaciones. "OP" es la operacion que se desea realizar "Nullable, First/Last, Follow"
@@ -344,6 +349,70 @@ namespace Scanner.ExpressionTree
             else
             {
                 return S.Pop();
+            }
+        }
+
+        //public Dictionary<int, Follow> followDictionary; //key = follow id (symbol id) value = follow object
+        //public Dictionary<string, TransitionSummary> transitions { get; set; }
+        public void MakeTransitions()
+        {
+            //Validate if exist values to make the process
+            if (Root != null && Root.firstList.Count > 0)
+            {
+                //Create the first state, the first of the tree
+                string temp = string.Join(',', Root.firstList.ToArray());
+                TransitionSummary auxTransition = new TransitionSummary(symbols);
+                auxTransition.State = Root.firstList;
+                transitions.Add(temp, auxTransition);
+
+                Queue<string> auxTransitionQueue = new Queue<string>(); //Queue to set a transactions queue where the unworked states are in
+                auxTransitionQueue.Enqueue(temp);
+
+                //Iterative process with each state
+                while (auxTransitionQueue.Count > 0)
+                {
+                    temp = auxTransitionQueue.Peek();
+                    //Process to put all the elements of transition for one state in the determine state
+                    foreach (int value in transitions[temp].State)
+                    {
+                        string auxActualSymbol = followDictionary[value].symbol;
+                        List<int> auxActualFollow = followDictionary[value].followList;
+
+                        //Foreach of the elments of the follow try to insert to the list in transitions
+                        foreach (int x in auxActualFollow)
+                        {
+                            //The element is added only if doesn't exist
+                            if (!transitions[temp].Transition[auxActualSymbol].Contains(x))
+                            {
+                                transitions[temp].Transition[auxActualSymbol].Add(x);
+                            }
+                        }
+                        //Validation the the sort is not making in the extended symbol from the expression
+                        if (transitions[temp].Transition.ContainsKey(auxActualSymbol))
+                        {
+                            transitions[temp].Transition[auxActualSymbol].Sort();
+                        }
+                    }
+
+                    //Process to evaluate if exist new state form the before process en added to a queue to be operated
+                    foreach (var value in transitions[temp].State)
+                    {
+                        string S = followDictionary[value].symbol;
+                        if (transitions[temp].Transition.ContainsKey(S))
+                        {
+                            string key = string.Join(',', transitions[temp].Transition[S].ToArray());
+                            if (!transitions.ContainsKey(key))
+                            {
+                                TransitionSummary newTransition = new TransitionSummary(symbols);
+                                newTransition.State = transitions[temp].Transition[S];
+                                transitions.Add(key, newTransition);
+                                auxTransitionQueue.Enqueue(key);
+                            }
+                        }
+                    }
+
+                    auxTransitionQueue.Dequeue();
+                }
             }
         }
     }
