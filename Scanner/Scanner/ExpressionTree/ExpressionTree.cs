@@ -360,7 +360,7 @@ namespace Scanner.ExpressionTree
             if (Root != null && Root.firstList.Count > 0)
             {
                 //Create the first state, the first of the tree
-                string temp = string.Join(',',Root.firstList.ToArray());
+                string temp = string.Join(',', Root.firstList.ToArray());
                 TransitionSummary auxTransition = new TransitionSummary(symbols);
                 auxTransition.State = Root.firstList;
                 transitions.Add(temp, auxTransition);
