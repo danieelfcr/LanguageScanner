@@ -62,6 +62,9 @@ namespace Scanner
                 expressionTree.PostOrder(1); //assign first and last
                 expressionTree.PostOrder(2); //assign follows
                 expressionTree.MakeTransitions();
+
+                AutomatonData AD = new AutomatonData(expressionTree);
+                AD.Show();
             }
             else
             {
