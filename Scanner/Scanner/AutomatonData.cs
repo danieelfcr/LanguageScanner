@@ -50,17 +50,16 @@ namespace Scanner
                 }
 
                 List<string> auxList = new List<string>();
+                int j = 0;
                 foreach (var states in expressionTree.transitions)
                 {
-                    string S = states.Key;      //String with the key of the actual state
+                    string S = string.Format("S{0} = [{1}]", j, states.Key);      //String with the key of the actual state
 
                     auxList.Clear();            //Reset auxiliar list
                     auxList.Add(S);             //Add the string for the state
 
-                    var T = states.Value.Transition; //Actual dictionary of transitions with the state form de actual state key
-
                     //Process to add to the auxiliar list all the transitons in the list of each symbol
-                    foreach (var transition in T)
+                    foreach (var transition in states.Value.Transition)
                     {
                         string temp = "";
                         if (transition.Value.Count > 0)
@@ -73,7 +72,8 @@ namespace Scanner
                         }
                         auxList.Add(temp);
                     }
-                    
+
+                    j++;
                     dGVTransitions.Rows.Add(auxList.ToArray());     //Add a complete row
                 }
             }
