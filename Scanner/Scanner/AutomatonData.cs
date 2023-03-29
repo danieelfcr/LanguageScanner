@@ -39,7 +39,7 @@ namespace Scanner
 
         private void FirstLastOutput()
         {
-            dGVFirstLastNullable.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dGVFirstLastNullable.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
             expressionTree.PostOrder(3);
 
             // Determine the total length of the one-dimensional array

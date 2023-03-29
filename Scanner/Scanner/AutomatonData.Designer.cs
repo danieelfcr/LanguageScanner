@@ -78,15 +78,15 @@
             dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
             dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
             this.dGVFirstLastNullable.DefaultCellStyle = dataGridViewCellStyle2;
-            this.dGVFirstLastNullable.Location = new System.Drawing.Point(47, 131);
-            this.dGVFirstLastNullable.Margin = new System.Windows.Forms.Padding(6, 7, 6, 7);
+            this.dGVFirstLastNullable.Location = new System.Drawing.Point(22, 53);
             this.dGVFirstLastNullable.Name = "dGVFirstLastNullable";
             this.dGVFirstLastNullable.ReadOnly = true;
+            this.dGVFirstLastNullable.RowHeadersVisible = false;
             this.dGVFirstLastNullable.RowHeadersWidth = 92;
             dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
             this.dGVFirstLastNullable.RowsDefaultCellStyle = dataGridViewCellStyle3;
             this.dGVFirstLastNullable.RowTemplate.Height = 25;
-            this.dGVFirstLastNullable.Size = new System.Drawing.Size(823, 565);
+            this.dGVFirstLastNullable.Size = new System.Drawing.Size(384, 229);
             this.dGVFirstLastNullable.TabIndex = 0;
             this.dGVFirstLastNullable.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dGVFirstLastNullable_CellContentClick);
             // 
@@ -134,14 +134,14 @@
             this.Column5,
             this.Column6});
             this.dGVFollow.DefaultCellStyle = dataGridViewCellStyle2;
-            this.dGVFollow.Location = new System.Drawing.Point(945, 131);
-            this.dGVFollow.Margin = new System.Windows.Forms.Padding(6, 7, 6, 7);
+            this.dGVFollow.Location = new System.Drawing.Point(441, 53);
             this.dGVFollow.Name = "dGVFollow";
             this.dGVFollow.ReadOnly = true;
+            this.dGVFollow.RowHeadersVisible = false;
             this.dGVFollow.RowHeadersWidth = 92;
             this.dGVFollow.RowsDefaultCellStyle = dataGridViewCellStyle3;
             this.dGVFollow.RowTemplate.Height = 25;
-            this.dGVFollow.Size = new System.Drawing.Size(823, 565);
+            this.dGVFollow.Size = new System.Drawing.Size(384, 229);
             this.dGVFollow.TabIndex = 1;
             // 
             // Column5
@@ -183,14 +183,13 @@
             dataGridViewCellStyle5.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
             dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
             this.dGVTransitions.DefaultCellStyle = dataGridViewCellStyle5;
-            this.dGVTransitions.Location = new System.Drawing.Point(47, 821);
-            this.dGVTransitions.Margin = new System.Windows.Forms.Padding(6, 7, 6, 7);
+            this.dGVTransitions.Location = new System.Drawing.Point(22, 333);
             this.dGVTransitions.Name = "dGVTransitions";
             this.dGVTransitions.ReadOnly = true;
             this.dGVTransitions.RowHeadersVisible = false;
             this.dGVTransitions.RowHeadersWidth = 92;
             this.dGVTransitions.RowTemplate.Height = 25;
-            this.dGVTransitions.Size = new System.Drawing.Size(1721, 565);
+            this.dGVTransitions.Size = new System.Drawing.Size(803, 229);
             this.dGVTransitions.TabIndex = 2;
             // 
             // lTransitions
@@ -198,10 +197,9 @@
             this.lTransitions.AutoSize = true;
             this.lTransitions.Font = new System.Drawing.Font("Segoe UI Variable Text", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.lTransitions.ForeColor = System.Drawing.Color.Black;
-            this.lTransitions.Location = new System.Drawing.Point(47, 735);
-            this.lTransitions.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.lTransitions.Location = new System.Drawing.Point(22, 298);
             this.lTransitions.Name = "lTransitions";
-            this.lTransitions.Size = new System.Drawing.Size(305, 72);
+            this.lTransitions.Size = new System.Drawing.Size(139, 32);
             this.lTransitions.TabIndex = 3;
             this.lTransitions.Text = "Transitions";
             // 
@@ -210,10 +208,9 @@
             this.lFirstLastNullable.AutoSize = true;
             this.lFirstLastNullable.Font = new System.Drawing.Font("Segoe UI Variable Text", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.lFirstLastNullable.ForeColor = System.Drawing.Color.Black;
-            this.lFirstLastNullable.Location = new System.Drawing.Point(47, 44);
-            this.lFirstLastNullable.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.lFirstLastNullable.Location = new System.Drawing.Point(22, 18);
             this.lFirstLastNullable.Name = "lFirstLastNullable";
-            this.lFirstLastNullable.Size = new System.Drawing.Size(513, 72);
+            this.lFirstLastNullable.Size = new System.Drawing.Size(232, 32);
             this.lFirstLastNullable.TabIndex = 4;
             this.lFirstLastNullable.Text = "First, Last, Nullable";
             // 
@@ -222,25 +219,23 @@
             this.lFollow.AutoSize = true;
             this.lFollow.Font = new System.Drawing.Font("Segoe UI Variable Text", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.lFollow.ForeColor = System.Drawing.Color.Black;
-            this.lFollow.Location = new System.Drawing.Point(945, 44);
-            this.lFollow.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.lFollow.Location = new System.Drawing.Point(441, 18);
             this.lFollow.Name = "lFollow";
-            this.lFollow.Size = new System.Drawing.Size(197, 72);
+            this.lFollow.Size = new System.Drawing.Size(89, 32);
             this.lFollow.TabIndex = 5;
             this.lFollow.Text = "Follow";
             // 
             // AutomatonData
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(15F, 37F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1800, 1416);
+            this.ClientSize = new System.Drawing.Size(849, 581);
             this.Controls.Add(this.lFollow);
             this.Controls.Add(this.lFirstLastNullable);
             this.Controls.Add(this.lTransitions);
             this.Controls.Add(this.dGVTransitions);
             this.Controls.Add(this.dGVFollow);
             this.Controls.Add(this.dGVFirstLastNullable);
-            this.Margin = new System.Windows.Forms.Padding(6, 7, 6, 7);
             this.Name = "AutomatonData";
             this.Text = "AutomatonData";
             ((System.ComponentModel.ISupportInitialize)(this.dGVFirstLastNullable)).EndInit();
