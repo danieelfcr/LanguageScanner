@@ -12,6 +12,7 @@ namespace Scanner.ExpressionTree
         public Node Root;
         public int leafCount;
         public int nodeCount;
+        public int actualRow;
         public List<string> symbols { get; set; }           //Variable to contain the present symbols in the grammar
         
         public Dictionary<int, Follow> followDictionary; //key = follow id (symbol id) value = follow object
@@ -36,6 +37,8 @@ namespace Scanner.ExpressionTree
         public ExpressionTree(Queue<Node> tokenSource)
         {
             leafCount = 1;
+            actualRow = 0;
+            nodeCount = 0;
             followDictionary = new Dictionary<int, Follow>();
             Root = CreateTree(tokenSource);
             firstLastMatrix = new string[nodeCount, 4];
@@ -59,6 +62,9 @@ namespace Scanner.ExpressionTree
                         break;
                     case 2:
                         AssignFollows(node);
+                        break;
+                    case 3:
+                        FillMatrix(node);
                         break;
                 }
             }
@@ -226,7 +232,14 @@ namespace Scanner.ExpressionTree
             }
         }
 
-
+        void FillMatrix(Node node)
+        {
+            firstLastMatrix[actualRow, 0] = node.symbol;
+            firstLastMatrix[actualRow, 1] = string.Join(",", node.firstList);
+            firstLastMatrix[actualRow, 2] = string.Join(",", node.lastList);
+            firstLastMatrix[actualRow, 3] = node.nullable.ToString();
+            actualRow++;
+        }
 
         private Node CreateTree(Queue<Node> tokenSource)
         {
@@ -238,6 +251,7 @@ namespace Scanner.ExpressionTree
                 Node actualToken = tokenSource.Dequeue();
                 if (actualToken.kindSymbol == 0 || actualToken.kindSymbol == 1)
                 {
+                    nodeCount++;
                     //terminal / no terminal
                     Node st = actualToken;
                     st.leafNumber = leafCount;
@@ -281,7 +295,7 @@ namespace Scanner.ExpressionTree
                 }
                 else if (actualToken.kindSymbol == 2)   //is an operator token?
                 {
-                    
+                    nodeCount++;
                     if (actualToken.symbol == "*" || actualToken.symbol == "+" || actualToken.symbol == "?") 
                     {
                         //Unary operator
