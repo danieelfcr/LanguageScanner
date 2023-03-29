@@ -83,5 +83,10 @@ namespace Scanner
             }
             
         }
+
+        private void dGVFirstLastNullable_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
+        }
     }
 }
