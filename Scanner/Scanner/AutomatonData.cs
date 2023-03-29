@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,6 +21,7 @@ namespace Scanner
             InitializeComponent();
             this.expressionTree = expressionTree;
             FollowOutput();
+            FirstLastOutput();
             TransitionsOutput();
         }
 
@@ -32,6 +34,34 @@ namespace Scanner
                 List<int> followList = expressionTree.followDictionary[i].followList;
                 string tempList = string.Join(',', followList.ToArray());
                 dGVFollow.Rows.Add(i + " (" +expressionTree.followDictionary[i].symbol + ")", tempList);
+            }
+        }
+
+        private void FirstLastOutput()
+        {
+            dGVFirstLastNullable.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            expressionTree.PostOrder(3);
+
+            // Determine the total length of the one-dimensional array
+            int totalLength = expressionTree.firstLastMatrix.GetLength(0) * expressionTree.firstLastMatrix.GetLength(1);
+
+            // Declare the one-dimensional array
+            String[] oneDimensionalArray = new String[totalLength];
+
+            // Traverse the matrix and copy each element into the one-dimensional array
+            int index = 0;
+            for (int row = 0; row < expressionTree.firstLastMatrix.GetLength(0); row++)
+            {
+                for (int column = 0; column < expressionTree.firstLastMatrix.GetLength(1); column++)
+                {
+                    oneDimensionalArray[index] = expressionTree.firstLastMatrix[row, column];
+                    index++;
+                }
+            }
+
+            for (int i = 0; i < oneDimensionalArray.Length; i=i+4)
+            {
+                dGVFirstLastNullable.Rows.Add(oneDimensionalArray[i], oneDimensionalArray[i+1], oneDimensionalArray[i+2], oneDimensionalArray[i+3]);
             }
         }
 
