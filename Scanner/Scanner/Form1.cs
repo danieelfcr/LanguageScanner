@@ -63,6 +63,17 @@ namespace Scanner
                 expressionTree.PostOrder(2); //assign follows
                 expressionTree.MakeTransitions();
 
+                List<string> test = RegularEx.GetActionFunctions(rTBResult.Text);
+                List<string> codelines = new List<string>();
+                RegularEx.ActionFunctionsCode(ref codelines, test);
+
+                string testLines = "";
+                foreach (string codeLine in codelines)
+                {
+                    testLines += codeLine + "\n";
+                }
+                MessageBox.Show(testLines);
+
                 AutomatonData AD = new AutomatonData(expressionTree);
                 AD.Show();
             }

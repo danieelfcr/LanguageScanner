@@ -24,8 +24,8 @@ namespace Scanner
 
         //ACTIONS RE---------------------------------------------------------------------------------------------------------
         Regex actionsRE = new Regex("ACTIONS\\s*RESERVADAS\\s*\\(\\s*\\)\\s*{\\s*(([0-9]|([1-9][0-9]*))\\s*=\\s*'([A-Z]|[a-z])+'\\s*)+}\\s*(([A-Z]|[a-z])+\\s*\\(\\s*\\)\\s*{\\s*(([0-9]|([1-9][0-9]*))\\s*=\\s*'([A-Z]|[a-z])+'\\s*)+}\\s*)*");
-        Regex actionsToken = new Regex("(\\s*([0-9]|([1-9][0-9]*))\\s*=\\s*'([A-Z]|[a-z])+'\\s*)+");
-        Regex actionsFunction = new Regex("(([A-Z]|[a-z])+\\s*\\(\\s*\\)\\s*{\\s*(([0-9]|([1-9][0-9]*))\\s*=\\s*'([A-Z]|[a-z])+'\\s*)+}\\s*)*");
+        Regex actionsToken = new Regex("\\s*([0-9]|([1-9][0-9]*))\\s*=\\s*'([A-Z]|[a-z])+'\\s*");
+        Regex actionsFunction = new Regex("([A-Z]|[a-z])+\\s*\\(\\s*\\)\\s*{\\s*(([0-9]|([1-9][0-9]*))\\s*=\\s*'([A-Z]|[a-z])+'\\s*)+}\\s*");
 
         //ERROR RE-----------------------------------------------------------------------------------------------------------
         Regex errorRE = new Regex("([A-Z]*ERROR\\s*=\\s*[1-9][0-9]*\\s*)+");
@@ -198,6 +198,54 @@ namespace Scanner
             }
 
             return queueExpression;
+        }
+
+        /// <summary>
+        /// Function to obtain the Actions Functions used to write the code specify method in code generator process
+        /// </summary>
+        /// <param name="grammar">The complete grammar inserted</param>
+        /// <returns>A string list that contains all the text from all functions in Actions</returns>
+        public List<string> GetActionFunctions(string grammar)
+        {
+            List<string> functions = new List<string>();
+            if (actionsFunction.IsMatch(grammar))
+            {
+                foreach (Match match in actionsFunction.Matches(grammar))
+                {
+                    functions.Add(match.Value);
+                }
+            }
+            return functions;
+        }
+
+        public void ActionFunctionsCode(ref List<string> codeLines, List<string> functions)
+        {
+            string auxLine;
+            foreach (string function in functions)
+            {
+                string funName = new Regex("\\s*[A-Za-z]+\\s*\\(\\s*\\)\\s*").Match(function).Value;
+                funName = new Regex("\\s*\\(\\s*\\)\\s*").Replace(funName, string.Empty).Trim();
+                auxLine = "\tstatic String " + funName + " (String command) {";
+                codeLines.Add(auxLine);
+
+                foreach (Match match in actionsToken.Matches(function))
+                {
+                    string acToken = match.Value;
+                    string num = new Regex("[1-9][0-9]*").Match(acToken).Value;
+                    string word = new Regex("[A-Za-z]+").Match(acToken).Value;
+
+                    auxLine = "\t\tif (command.equalsIsIgnoreCase(\"" + word + "\"))";
+                    codeLines.Add(auxLine);
+                    auxLine = "\t\t\treturn \"TOKEN" + num + "\";";
+                    codeLines.Add(auxLine);
+                }
+
+                auxLine = "\t\treturn \"TOKEN 4\"";
+                codeLines.Add(auxLine);
+                auxLine = "\t}";
+                codeLines.Add(auxLine);
+
+            }
         }
     }
 }
