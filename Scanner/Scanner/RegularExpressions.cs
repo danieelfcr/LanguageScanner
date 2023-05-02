@@ -171,7 +171,6 @@ namespace Scanner
 
                     if (listExpression.Count > 0)
                     {
-                        int concatFlag = 0;
                         Node preNode = listExpression[listExpression.Count - 1];
 
                         if (auxNode.kindSymbol == 0 | auxNode.kindSymbol == 1 | auxNode.kindSymbol == 3)

@@ -379,7 +379,7 @@ namespace Scanner.ExpressionTree
                 auxTransition.State = Root.firstList;
                 transitions.Add(temp, auxTransition);
 
-                Queue<string> auxTransitionQueue = new Queue<string>(); //Queue to set a transactions queue where the unworked states are in
+                Queue<string> auxTransitionQueue = new Queue<string>(); //Queue to set a transition queue where the unworked states are in
                 auxTransitionQueue.Enqueue(temp);
 
                 //Iterative process with each state
