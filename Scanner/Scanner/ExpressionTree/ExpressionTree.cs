@@ -23,6 +23,10 @@ namespace Scanner.ExpressionTree
 
         public Dictionary<string, TransitionSummary> transitions { get; set; }
 
+        public int terminalSymbol { get; set; }         //It refers to the number that represents the terminal symbol in the follow calculate
+
+        public Dictionary<int, List<int>> token_State { get; set; }     //Dictionary to save the information that join tokens with states, key = # od token, value = numbers that represents the symbols used in the states
+
         private Dictionary<string, int> operatorHierarchy = new Dictionary<string, int>() //symbol, number in the hierarchy
         {
             {"|", 1},
@@ -375,6 +379,7 @@ namespace Scanner.ExpressionTree
             {
                 //Create the first state, the first of the tree
                 string temp = string.Join(',', Root.firstList.ToArray());
+                bool isFinalState = false;
                 TransitionSummary auxTransition = new TransitionSummary(symbols);
                 auxTransition.State = Root.firstList;
                 transitions.Add(temp, auxTransition);
@@ -419,6 +424,10 @@ namespace Scanner.ExpressionTree
                             {
                                 TransitionSummary newTransition = new TransitionSummary(symbols);
                                 newTransition.State = transitions[temp].Transition[S];
+                                //if (transitions[temp].Transition[S].Contains('#'))
+                                //{
+
+                                //}
                                 transitions.Add(key, newTransition);
                                 auxTransitionQueue.Enqueue(key);
                             }

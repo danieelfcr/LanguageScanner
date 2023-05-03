@@ -78,20 +78,36 @@ namespace Scanner
         /// </summary>
         /// <param name="rich">Richtextbox that contains the grammar and it can be access line by line</param>
         /// <returns></returns>
-        public string GetRegularExpression(RichTextBox rich)
+        public string GetRegularExpression(RichTextBox rich, ref Dictionary<int, List<int>> token_State, ref int terminalSymbol)
         {
             List<string> tokens = new List<string>();
+            int numToken = new int();
+            Dictionary<int, List<int>> auxTokenDictionary = new Dictionary<int, List<int>>();
+            
+            int symbolCount = 1;
             string auxLine;
+
             for (int i = 0; i < rich.Lines.Count(); i++)
             {
+                List<int> auxlist = new List<int>();
                 if (tokenRE.IsMatch(rich.Lines[i]))
                 {
                     auxLine = rich.Lines[i];
+                    numToken = Convert.ToInt32(new Regex("[1-9][0-9]*").Match(tokenRE.Match(auxLine).Value).Value);
                     auxLine = tokenRE.Replace(auxLine, string.Empty);
                     auxLine = new Regex("{\\s*(\\w+\\s*\\(\\s*\\)\\s*)+}").Replace(auxLine, string.Empty); //expression to delete calls in tokens
+
+                    foreach (Match match in new Regex("'\\S'|[A-Za-z]+").Matches(auxLine))
+                    {
+                        auxlist.Add(symbolCount);
+                        symbolCount++;
+                    }
+                    auxTokenDictionary.Add(numToken, auxlist);
                     tokens.Add(auxLine.Trim());
                 }
             }
+            terminalSymbol = symbolCount;
+            token_State = auxTokenDictionary;
             //create re with extended Symbol
             string re = "";
             re += "(";
@@ -244,7 +260,6 @@ namespace Scanner
                 codeLines.Add(auxLine);
                 auxLine = "\t}";
                 codeLines.Add(auxLine);
-
             }
         }
     }
