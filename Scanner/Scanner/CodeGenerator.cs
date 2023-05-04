@@ -194,7 +194,7 @@ namespace Scanner
                         if (tt.Value.Count > 0)
                         {
                             string value = tt.Key;
-                            expected = value + " ";
+                            expected = new Regex("'").Replace(value, string.Empty) + " ";
                             auxLine = "\t\t\t\t\t\tcase \"" + new Regex("'").Replace(value, string.Empty) + "\":{";
                             codeLines.Add(auxLine);
 
@@ -282,6 +282,19 @@ namespace Scanner
             codeLines.Add(auxLine);
             auxLine = "\t\t\tindex++;";
             codeLines.Add(auxLine);
+            auxLine = "\t\t}\n";
+            codeLines.Add(auxLine);
+
+            auxLine = "\t\tif (isFinalState(actual_state, final_states) && index == program.length()) {";
+            codeLines.Add(auxLine);
+            auxLine = "\t\t\tSystem.out.println(\"PROGRAMA CORRECTO\");";
+            codeLines.Add(auxLine);
+            auxLine = "\t\t} else {";
+            codeLines.Add(auxLine);
+            auxLine = "\t\t\tSystem.out.println(\"FALLO EN EL PROGRAMA\");";
+            codeLines.Add(auxLine);
+            auxLine = "\t\t}";
+            codeLines.Add(auxLine);
         }
 
         public void GenerateIsFinalState()
@@ -326,7 +339,7 @@ namespace Scanner
 
                     auxLine = "\t\tif (command.equalsIsIgnoreCase(\"" + word + "\"))";
                     codeLines.Add(auxLine);
-                    auxLine = "\t\t\treturn \"TOKEN" + num + "\";";
+                    auxLine = "\t\t\treturn \"TOKEN " + num + "\";";
                     codeLines.Add(auxLine);
                 }
 
