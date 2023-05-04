@@ -25,9 +25,7 @@ namespace Scanner.ExpressionTree
 
         public int terminalSymbol { get; set; }         //It refers to the number that represents the terminal symbol in the follow calculate
 
-        public Dictionary<int, List<int>> token_State { get; set; }     //Dictionary to save the information that join tokens with states, key = # od token, value = numbers that represents the symbols used in the states
-
-        public Dictionary<int, string> TokenValues { get; set; }
+        public Dictionary<int, TokenSummary> tokenInformation { get; set; }     //Dictionary to save the information that join tokens with states, key = # od token, value = numbers that represents the symbols used in the states
 
         private Dictionary<string, int> operatorHierarchy = new Dictionary<string, int>() //symbol, number in the hierarchy
         {
@@ -40,7 +38,7 @@ namespace Scanner.ExpressionTree
             {")", 7},
         }; 
 
-        public ExpressionTree(Queue<Node> tokenSource, List<string> listSymbols, Dictionary<int, List<int>> tokenState, int extendedSymbol)
+        public ExpressionTree(Queue<Node> tokenSource, List<string> listSymbols, Dictionary<int, TokenSummary> tokenSum, int extendedSymbol)
         {
             leafCount = 1;
             actualRow = 0;
@@ -51,8 +49,8 @@ namespace Scanner.ExpressionTree
             followTable = new Dictionary<string, List<int>>();
             transitions = new Dictionary<string, TransitionSummary>();
             symbols = listSymbols;
-            token_State = tokenState;
             terminalSymbol = extendedSymbol;
+            tokenInformation = tokenSum;
         }
 
         void PostOrder(Node node, int op)

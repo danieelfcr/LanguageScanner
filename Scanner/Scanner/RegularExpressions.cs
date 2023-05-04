@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Text.RegularExpressions;
 using System.Security.Permissions;
 using Scanner.ExpressionTree;
+using System.Security;
 
 namespace Scanner
 {
@@ -77,7 +78,7 @@ namespace Scanner
         /// </summary>
         /// <param name="rich">Richtextbox that contains the grammar and it can be access line by line</param>
         /// <returns></returns>
-        public string GetRegularExpression(RichTextBox rich, ref Dictionary<int, List<int>> token_State, ref int terminalSymbol, ref Dictionary<int, string> tokenValues)
+        public string GetRegularExpression(RichTextBox rich, ref Dictionary<int, TokenSummary> tokenSummary, ref int terminalSymbol)
         {
             List<string> tokens = new List<string>();
             int numToken = new int();
@@ -93,7 +94,17 @@ namespace Scanner
                     auxLine = rich.Lines[i];
                     numToken = Convert.ToInt32(new Regex("[1-9][0-9]*").Match(tokenRE.Match(auxLine).Value).Value);
                     auxLine = tokenRE.Replace(auxLine, string.Empty);
-                    tokenValues.Add(numToken, auxLine.Trim());
+
+                    TokenSummary auxSummary = new TokenSummary();
+                    auxSummary.TokenValue = auxLine.Trim();
+                    auxSummary.TokenNumber = numToken;
+
+                    if (new Regex("{\\s*(\\w+\\s*\\(\\s*\\)\\s*)+}").IsMatch(auxLine))
+                    {
+                        auxSummary.CallMethod = true;
+                        auxSummary.Method = new Regex("\\w+").Match(new Regex("{\\s*(\\w+\\s*\\(\\s*\\)\\s*)+}").Match(auxLine).Value).Value;
+                    }
+
                     auxLine = new Regex("{\\s*(\\w+\\s*\\(\\s*\\)\\s*)+}").Replace(auxLine, string.Empty); //expression to delete calls in tokens
 
                     foreach (Match match in new Regex("'\\S'|[A-Za-z]+").Matches(auxLine))
@@ -101,7 +112,9 @@ namespace Scanner
                         auxlist.Add(symbolCount);
                         symbolCount++;
                     }
-                    token_State.Add(numToken, auxlist);
+
+                    auxSummary.token_States = auxlist;
+                    tokenSummary.Add(numToken, auxSummary);
                     tokens.Add(auxLine.Trim());
                 }
             }

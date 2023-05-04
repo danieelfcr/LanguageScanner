@@ -151,9 +151,9 @@ namespace Scanner
                     auxLine = "\t\t\t\t\t\tcase \"BLANK_SPACE\":{";
                     codeLines.Add(auxLine);
 
-                    foreach (KeyValuePair<int, string> ss in expressionTree.TokenValues)
+                    foreach (KeyValuePair<int, TokenSummary> ss in expressionTree.tokenInformation)
                     {
-                        string value = ss.Value;
+                        string value = ss.Value.TokenValue;
                         if (new Regex("('\\S|\\s')+").IsMatch(value))
                         {
                             int n = ss.Key;
@@ -188,16 +188,17 @@ namespace Scanner
                     auxLine = "\t\t\t\t\t{";
                     codeLines.Add(auxLine);
 
+                    string expected = "";
                     foreach (KeyValuePair<string, List<int>> tt in state.Transition)
                     {
                         if (tt.Value.Count > 0)
                         {
                             string value = tt.Key;
-                            int n = 0;
+                            expected = value + " ";
                             auxLine = "\t\t\t\t\t\tcase \"" + new Regex("'").Replace(value, string.Empty) + "\":{";
                             codeLines.Add(auxLine);
 
-
+                            int n = expressionTree.transitions[string.Join(',', tt.Value.ToArray())].StateNumber;
 
                             auxLine = "\t\t\t\t\t\t\tactual state = " + n + ";";
                             codeLines.Add(auxLine);
@@ -205,10 +206,9 @@ namespace Scanner
                         }
                     }
 
-
                     auxLine = "\t\t\t\t\t\tdefault:{";
                     codeLines.Add(auxLine);
-                    auxLine = "\t\t\t\t\t\t\tSystem.out.println(\"Se esperaba \" + \"" + "\")";
+                    auxLine = "\t\t\t\t\t\t\tSystem.out.println(\"Se esperaba \" + \"" + expected + "\")";
                     codeLines.Add(auxLine);
                     auxLine = "\t\t\t\t\t\t}break;";
                     codeLines.Add(auxLine);
@@ -216,11 +216,62 @@ namespace Scanner
                     auxLine = "\t\t\t\t\t}";
                     codeLines.Add(auxLine);
                 }
-                //FALTAN ESTADO INTERMEDIO Y ESTADO REPETITIVO
+                //It is a repetitive state
                 else
                 {
+                    auxLine = "\t\t\t\t\tswitch (symbol)";
+                    codeLines.Add(auxLine);
+                    auxLine = "\t\t\t\t\t{";
+                    codeLines.Add(auxLine);
 
-                    
+                    string expected = "";
+                    foreach (KeyValuePair<string, List<int>> tt in state.Transition)
+                    {
+                        if (tt.Value.Count > 0)
+                        {
+                            string value = tt.Key;
+                            expected = value + " ";
+                            auxLine = "\t\t\t\t\t\tcase \"" + new Regex("'").Replace(value, string.Empty) + "\":{";
+                            codeLines.Add(auxLine);
+
+                            int n = expressionTree.transitions[string.Join(',', tt.Value.ToArray())].StateNumber;
+
+                            auxLine = "\t\t\t\t\t\t\tactual state = " + n + ";";
+                            codeLines.Add(auxLine);
+                            auxLine = "\t\t\t\t\t\t\tcommand += lexeme;";
+                        }
+                    }
+
+                    auxLine = "\t\t\t\t\t\tcase \"BLANK_SPACE\":{";
+                    codeLines.Add(auxLine);
+
+                    int newState = expressionTree.tokenInformation[state.StateNumber].TokenNumber;
+                    if (expressionTree.tokenInformation[state.StateNumber].CallMethod)
+                    {
+                        auxLine = "\t\t\t\t\t\t\tSystem.out.println(" + expressionTree.tokenInformation[state.StateNumber].Method + "(command, " + newState + "));";
+                        codeLines.Add(auxLine);
+                    }
+                    else
+                    {
+                        auxLine = "\t\t\t\t\t\t\tSystem.out.println(\"TOKEN " + newState + "\")";
+                        codeLines.Add(auxLine);
+                    }
+
+                    auxLine = "\t\t\t\t\t\t\tactual_state = 0;";
+                    codeLines.Add(auxLine);
+                    auxLine = "\t\t\t\t\t\t\tcommand = \"\";";
+                    codeLines.Add(auxLine);
+                    auxLine = "\t\t\t\t\t\t}break;";
+
+                    auxLine = "\t\t\t\t\t\tdefault:{";
+                    codeLines.Add(auxLine);
+                    auxLine = "\t\t\t\t\t\t\tSystem.out.println(\"Se esperaba \" + \"" + expected + "\")";
+                    codeLines.Add(auxLine);
+                    auxLine = "\t\t\t\t\t\t}break;";
+                    codeLines.Add(auxLine);
+
+                    auxLine = "\t\t\t\t\t}";
+                    codeLines.Add(auxLine);
                 }
 
                 auxLine = "\t\t\t\t}break;\n";

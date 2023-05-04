@@ -56,13 +56,11 @@ namespace Scanner
                 rTBResult.BackColor = Color.Green;
                 
                 List<string> symbols = new List<string>();  //List to know all the different symbols for the grammar
-                Dictionary<int, List<int>> token_State = new Dictionary<int, List<int>>();      //Dictionary used to refer a token to a group of values that describes a state
+                Dictionary<int, TokenSummary> tokenSummary = new Dictionary<int, TokenSummary>();      //Dictionary used to refer a token to a group of values that describes a state
                 int terminalSymbol = new int();
-                Dictionary<int, string> tV = new Dictionary<int, string>();
 
-                Queue<Node> tokensQueue = RegularEx.GetQueueExpression(RegularEx.GetRegularExpression(rTBResult, ref token_State, ref terminalSymbol, ref tV), ref symbols);
-                ExpressionTree.ExpressionTree expressionTree = new ExpressionTree.ExpressionTree(tokensQueue, symbols, token_State, terminalSymbol);
-                expressionTree.TokenValues = tV;
+                Queue<Node> tokensQueue = RegularEx.GetQueueExpression(RegularEx.GetRegularExpression(rTBResult, ref tokenSummary, ref terminalSymbol), ref symbols);
+                ExpressionTree.ExpressionTree expressionTree = new ExpressionTree.ExpressionTree(tokensQueue, symbols, tokenSummary, terminalSymbol);
                 expressionTree.PostOrder(0); //assign nullable
                 expressionTree.PostOrder(1); //assign first and last
                 expressionTree.PostOrder(2); //assign follows
@@ -77,7 +75,7 @@ namespace Scanner
                     code += line + "\n";
                 }
 
-                MessageBox.Show(code);
+                rTBResult.Text = code;
 
                 AutomatonData AD = new AutomatonData(expressionTree);
                 AD.Show();
