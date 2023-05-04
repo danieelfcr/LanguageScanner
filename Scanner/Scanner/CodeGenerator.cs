@@ -77,6 +77,53 @@ namespace Scanner
         {
             /*AGREGAR EL CÓDIGO QUE ESCRIBA LA FUNCIÓN IDENTIFY_SET EN CÓDIGO JAVA 
               AGREGÁNDOLE A LA VARIABLE CODELINES LAS LÍNEAS DE CÓDIGO */
+
+            //Trabajando los set
+            //Cada set, agregarlo a una lista y ponerlo en el array
+            string[] sets = { "LETRA='A'..'Z'+'a'..'z'+'_'", "DIGITO  = '0'..'9'", "SIMBOL='%'" };
+
+            codeLines.Add("static String identify_SET(char lexeme) {"); //Inicia funcion de SETS
+            codeLines.Add("int lexeme_value = (int)lexeme;");
+
+            for (int i = 0; i < sets.Length; i++)
+            {
+                string nombreSet = sets[i].Split('=')[0].Trim(); 
+                string valorSet = sets[i].Split('=')[1].Trim();
+                string[] conjuntosSet;
+
+
+                //Verifico los conjuntos de sets
+                conjuntosSet = valorSet.Split('+');
+                
+
+                for (int j = 0; j < conjuntosSet.Length; j++)
+                {
+
+                    if (conjuntosSet[j].Contains(".."))
+                    { //Es un conjunto
+                        conjuntosSet[j] = conjuntosSet[j].Replace("..", "$");
+                        string[] limites = conjuntosSet[j].Split('$');
+
+                        codeLines.Add("int " + nombreSet + j + "_INFERIOR = (int)" + limites[0] + ";");
+                        codeLines.Add("int " + nombreSet + j + "_SUPERIOR = (int)" + limites[1] + ";");
+
+                        codeLines.Add("if (lexeme_value >= " + nombreSet + j + "_INFERIOR  && lexeme_value <= " + nombreSet + j + "_SUPERIOR)");
+                        codeLines.Add("return \"" + nombreSet + "\";");
+
+                    }
+                    else //Es valor unico 
+                    {
+                        codeLines.Add("int " + nombreSet + j + "_ONLY = (int)" + conjuntosSet[j] + ";");
+
+                        codeLines.Add("if (lexeme_value == " + nombreSet + j + "_ONLY)");
+                        codeLines.Add("return \"" + nombreSet + "\";");
+
+                    }
+
+                }
+
+
+            }
         }
 
         public void GenerateReservadas()
