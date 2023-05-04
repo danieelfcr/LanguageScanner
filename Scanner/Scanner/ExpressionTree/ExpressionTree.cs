@@ -27,6 +27,8 @@ namespace Scanner.ExpressionTree
 
         public Dictionary<int, List<int>> token_State { get; set; }     //Dictionary to save the information that join tokens with states, key = # od token, value = numbers that represents the symbols used in the states
 
+        public Dictionary<int, string> TokenValues { get; set; }
+
         private Dictionary<string, int> operatorHierarchy = new Dictionary<string, int>() //symbol, number in the hierarchy
         {
             {"|", 1},
@@ -76,7 +78,6 @@ namespace Scanner.ExpressionTree
                 }
             }
         }
-        
 
         //Llamar a este metodo para iniciar operaciones. "OP" es la operacion que se desea realizar "Nullable, First/Last, Follow"
         public void PostOrder(int op)

@@ -1,4 +1,5 @@
 using Scanner.ExpressionTree;
+using System.CodeDom.Compiler;
 using System.IO;
 using System.Runtime.InteropServices;
 
@@ -57,13 +58,26 @@ namespace Scanner
                 List<string> symbols = new List<string>();  //List to know all the different symbols for the grammar
                 Dictionary<int, List<int>> token_State = new Dictionary<int, List<int>>();      //Dictionary used to refer a token to a group of values that describes a state
                 int terminalSymbol = new int();
+                Dictionary<int, string> tV = new Dictionary<int, string>();
 
-                Queue<Node> tokensQueue = RegularEx.GetQueueExpression(RegularEx.GetRegularExpression(rTBResult, ref token_State, ref terminalSymbol), ref symbols);
+                Queue<Node> tokensQueue = RegularEx.GetQueueExpression(RegularEx.GetRegularExpression(rTBResult, ref token_State, ref terminalSymbol, ref tV), ref symbols);
                 ExpressionTree.ExpressionTree expressionTree = new ExpressionTree.ExpressionTree(tokensQueue, symbols, token_State, terminalSymbol);
+                expressionTree.TokenValues = tV;
                 expressionTree.PostOrder(0); //assign nullable
                 expressionTree.PostOrder(1); //assign first and last
                 expressionTree.PostOrder(2); //assign follows
                 expressionTree.MakeTransitions();
+
+                CodeGenerator cg = new CodeGenerator(expressionTree, "Hola");
+                cg.GenerateCode(RegularEx.GetActionFunctions(rTBResult.Text));
+
+                string code = "";
+                foreach (string line in cg.codeLines)
+                {
+                    code += line + "\n";
+                }
+
+                MessageBox.Show(code);
 
                 AutomatonData AD = new AutomatonData(expressionTree);
                 AD.Show();
