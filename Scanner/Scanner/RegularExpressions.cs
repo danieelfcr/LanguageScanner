@@ -348,7 +348,7 @@ namespace Scanner
                 }
                 else
                 {
-
+                    //FALTAN ESTADO FINAL, ESTADO INTERMEDIO Y ESTADO REPETITIVO
                 }
 
                 auxLine = "\t\t\t\t}break;\n";
