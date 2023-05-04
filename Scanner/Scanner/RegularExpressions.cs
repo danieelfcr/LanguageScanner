@@ -17,10 +17,9 @@ namespace Scanner
         Regex setsRE = new Regex("(\\s*SETS(\\s)+((\\s)*([A-Z])+( |\\t)*=( |\\t)*('([a-z])'\\.\\.'([a-z])'|'([A-Z])'\\.\\.'([A-Z])'|'.'|'([0-9])'\\.\\.'([0-9])'|CHR\\((([0-9])|([0-9])([0-9])|0([0-9])([0-9])|1([0-9])([0-9])|2([0-5])([0-5]))\\)(\\.\\.CHR\\((([0-9])|([0-9])([0-9])|0([0-9])|0([0-9])([0-9])|1([0-9])([0-9])|2([0-5])([0-5]))\\))?)(( |\\t)*\\+( |\\t)*('([a-z])'\\.\\.'([a-z])'|'([A-Z])'\\.\\.'([A-Z])'|'.'|'([0-9])'\\.\\.'([0-9])'|CHR\\((([0-9])|([0-9])([0-9])|0([0-9])([0-9])|1([0-9])([0-9])|2([0-5])([0-5]))\\)(\\.\\.CHR\\((([0-9])|([0-9])([0-9])|0([0-9])|0([0-9])([0-9])|1([0-9])([0-9])|2([0-5])([0-5]))\\))?))*)+\\s*)?");
         Regex setsREVerify = new Regex("^(\\s*SETS(\\s)+((\\s)*([A-Z])+( |\\t)*=( |\\t)*('([a-z])'\\.\\.'([a-z])'|'([A-Z])'\\.\\.'([A-Z])'|'.'|'([0-9])'\\.\\.'([0-9])'|CHR\\((([0-9])|([0-9])([0-9])|0([0-9])([0-9])|1([0-9])([0-9])|2([0-5])([0-5]))\\)(\\.\\.CHR\\((([0-9])|([0-9])([0-9])|0([0-9])|0([0-9])([0-9])|1([0-9])([0-9])|2([0-5])([0-5]))\\))?)(( |\\t)*\\+( |\\t)*('([a-z])'\\.\\.'([a-z])'|'([A-Z])'\\.\\.'([A-Z])'|'.'|'([0-9])'\\.\\.'([0-9])'|CHR\\((([0-9])|([0-9])([0-9])|0([0-9])([0-9])|1([0-9])([0-9])|2([0-5])([0-5]))\\)(\\.\\.CHR\\((([0-9])|([0-9])([0-9])|0([0-9])|0([0-9])([0-9])|1([0-9])([0-9])|2([0-5])([0-5]))\\))?))*)+\\s*)$");
 
-
         //TOKENS RE---------------------------------------------------------------------------------------------------------
         Regex tokensRE = new Regex("\\s*TOKENS\\s*\\n(\\s*TOKEN( |\\t)*([1-9][0-9]*)( |\\t)*=( |\\t)*(((( |\\t)*{( |\\t)*([A-Z]+( |\\t)*\\(( |\\t)*\\)( |\\t)*)+( |\\t)*}( |\\t)*)|(([A-Z]+( |\\t)*(\\*|\\+|\\?)?)|('\\S'( |\\t)*(\\*|\\+|\\?)?))|(( |\\t)*(([A-Z]+( |\\t)*(\\*|\\+|\\?)?)|('\\S'( |\\t)*(\\*|\\+|\\?)?))+( |\\t)*\\|( |\\t)*(([A-Z]+( |\\t)*(\\*|\\+|\\?)?)|('\\S'( |\\t)*(\\*|\\+|\\?)?))( |\\t)*(\\|( |\\t)*(([A-Z]+( |\\t)*(\\*|\\+|\\?)?)|('\\S'( |\\t)*(\\*|\\+|\\?)?)( |\\t)*)+)*)|(\\(( |\\t)*(((([A-Z]+( |\\t)*(\\*|\\+|\\?)?)|('\\S'( |\\t)*(\\*|\\+|\\?)?))( |\\t)*)|(( |\\t)*(([A-Z]+( |\\t)*(\\*|\\+|\\?)?)|('\\S'( |\\t)*(\\*|\\+|\\?)?))+( |\\t)*\\|( |\\t)*(([A-Z]+( |\\t)*(\\*|\\+|\\?)?)|('\\S'( |\\t)*(\\*|\\+|\\?)?))( |\\t)*(\\|( |\\t)*(([A-Z]+( |\\t)*(\\*|\\+|\\?)?)|('\\S'( |\\t)*(\\*|\\+|\\?)?)( |\\t)*)+)*)|(\\(( |\\t)*(((([A-Z]+( |\\t)*(\\*|\\+|\\?)?)|('\\S'( |\\t)*(\\*|\\+|\\?)?))( |\\t)*)|(( |\t)*(([A-Z]+( |\\t)*(\\*|\\+|\\?)?)|('\\S'( |\\t)*(\\*|\\+|\\?)?))+( |\\t)*\\|( |\\t)*(([A-Z]+( |\\t)*(\\*|\\+|\\?)?)|('\\S'( |\\t)*(\\*|\\+|\\?)?))( |\\t)*(\\|( |\\t)*(([A-Z]+( |\\t)*(\\*|\\+|\\?)?)|('\\S'( |\\t)*(\\*|\\+|\\?)?)( |\\t)*)+)*))+\\)( |\\t)*(\\*|\\+|\\?)?))+\\)( |\\t)*(\\*|\\+|\\?)?))( |\\t)*)+)+\\s*");
-        Regex tokenRE = new Regex("TOKEN( |\\t)*([1-9][0-9]*)( |\\t)*="); //Expresión regular utilizada para evaluar si una línea corresponde a un token
+        public Regex tokenRE = new Regex("TOKEN( |\\t)*([1-9][0-9]*)( |\\t)*="); //Expresión regular utilizada para evaluar si una línea corresponde a un token
 
         //ACTIONS RE---------------------------------------------------------------------------------------------------------
         Regex actionsRE = new Regex("ACTIONS\\s*RESERVADAS\\s*\\(\\s*\\)\\s*{\\s*(([0-9]|([1-9][0-9]*))\\s*=\\s*'([A-Z]|[a-z])+'\\s*)+}\\s*(([A-Z]|[a-z])+\\s*\\(\\s*\\)\\s*{\\s*(([0-9]|([1-9][0-9]*))\\s*=\\s*'([A-Z]|[a-z])+'\\s*)+}\\s*)*");
@@ -232,133 +231,6 @@ namespace Scanner
                 }
             }
             return functions;
-        }
-
-        /// <summary>
-        /// Procedure to add to the codeLines the lines about Actions fuction that is call for a Token that have a actions call in
-        /// </summary>
-        /// <param name="codeLines">List with all the lines of the Java Program.</param>
-        /// <param name="functions">It refers to all the actions that were found in the grammar and each elemend is an action function.</param>
-        public void ActionFunctionsCode(ref List<string> codeLines, List<string> functions)
-        {
-            string auxLine;
-            foreach (string function in functions)
-            {
-                string funName = new Regex("\\s*[A-Za-z]+\\s*\\(\\s*\\)\\s*").Match(function).Value;
-                funName = new Regex("\\s*\\(\\s*\\)\\s*").Replace(funName, string.Empty).Trim();
-                auxLine = "\tstatic String " + funName + " (String command, int state) {";
-                codeLines.Add(auxLine);
-
-                foreach (Match match in actionsToken.Matches(function))
-                {
-                    string acToken = match.Value;
-                    string num = new Regex("[1-9][0-9]*").Match(acToken).Value;
-                    string word = new Regex("[A-Za-z]+").Match(acToken).Value;
-
-                    auxLine = "\t\tif (command.equalsIsIgnoreCase(\"" + word + "\"))";
-                    codeLines.Add(auxLine);
-                    auxLine = "\t\t\treturn \"TOKEN" + num + "\";";
-                    codeLines.Add(auxLine);
-                }
-
-                auxLine = "\t\treturn \"TOKEN \" + state.toString();";
-                codeLines.Add(auxLine);
-                auxLine = "\t}";
-                codeLines.Add(auxLine);
-            }
-        }
-
-        public void MainWhile(ref List<string> codeLines, ExpressionTree.ExpressionTree tree)
-        {
-            string auxLine;
-            auxLine = "\t\tWhile (index < program.length()) {";
-            codeLines.Add(auxLine);
-            auxLine = "\t\t\tchar lexeme = program.charAt(index);";
-            codeLines.Add(auxLine);
-            auxLine = "\t\t\tString symbol = indentify_SET(lexeme);";
-            codeLines.Add(auxLine);
-            auxLine = "\t\t\tif (symbol.equals(\"\")) {";
-            codeLines.Add(auxLine);
-            auxLine = "\t\t\t\tsymbol = identify_TERMINAL(lexeme);";
-            codeLines.Add(auxLine);
-            auxLine = "\t\t\t}";
-            codeLines.Add(auxLine);
-            auxLine = "\t\t\tif (symbol.equals(\"\")) {";
-            codeLines.Add(auxLine);
-            auxLine = "\t\t\t\tSystem.out.println(\"Simbolo no reconocido\");";
-            codeLines.Add(auxLine);
-            auxLine = "\t\t\t\tbreak;";
-            codeLines.Add(auxLine);
-            auxLine = "\t\t\t}\n";
-            codeLines.Add(auxLine);
-
-            auxLine = "\t\t\tswitch (actual_state) {";
-            codeLines.Add(auxLine);
-
-            //Print the respective values for each state
-            foreach (KeyValuePair<string, TransitionSummary> kvp in tree.transitions)
-            {
-                string transition = kvp.Key;
-                auxLine = "\t\t\t\tcase " + tree.transitions[transition].StateNumber + ": {";
-                codeLines.Add(auxLine);
-
-                //Evalute to define if is a final state, a repetitive state, initial state or middle state
-                //it refers to the initial state
-                if (tree.transitions[transition].StateNumber == 0)
-                {
-                    auxLine = "\t\t\t\t\tswitch (symbol)";
-                    codeLines.Add(auxLine);
-                    auxLine = "\t\t\t\t\t{";
-
-                    foreach (string symbol in tree.symbols)
-                    {
-                        if (tree.transitions[transition].Transition[symbol].Count > 0)
-                        {
-                            auxLine = "\t\t\t\t\t\tcase \"" + symbol + "\":{";
-                            codeLines.Add(auxLine);
-                            string nextState = string.Join(',', tree.transitions[transition].Transition[symbol]);
-                            auxLine = "\t\t\t\t\t\t\tactual_state = " + tree.transitions[nextState].StateNumber + ";";
-                            codeLines.Add(auxLine);
-                            auxLine = "\t\t\t\t\t\t\tcommand += lexeme;";
-                            codeLines.Add(auxLine);
-                            auxLine = "\t\t\t\t\t\t}break;\n";
-                            codeLines.Add(auxLine);
-                        }
-                    }
-
-                    auxLine = "\t\t\t\t\t\tcase \"BLANK_SPACE\":{";
-                    codeLines.Add(auxLine);
-                    auxLine = "\t\t\t\t\t\t\tactual_state = 0;";
-                    codeLines.Add(auxLine);
-                    auxLine = "\t\t\t\t\t\t\tcommand = \"\";";
-                    codeLines.Add(auxLine);
-                    auxLine = "\t\t\t\t\t\t}break;";
-
-                    auxLine = "\t\t\t\t\t\tdefault:{";
-                    codeLines.Add(auxLine);
-                    auxLine = "\t\t\t\t\t\t\tSystem.out.println(\"Simbolo no reconocido\")";
-                    codeLines.Add(auxLine);
-                    auxLine = "\t\t\t\t\t\t}break;";
-                    codeLines.Add(auxLine);
-
-                    auxLine = "\t\t\t\t\t}";
-                    codeLines.Add(auxLine);
-                    auxLine = "\t\t\t\t}break;";
-
-                }
-                else
-                {
-                    //FALTAN ESTADO FINAL, ESTADO INTERMEDIO Y ESTADO REPETITIVO
-                }
-
-                auxLine = "\t\t\t\t}break;\n";
-                codeLines.Add(auxLine);
-            }
-
-            auxLine = "\t\t\t}";
-            codeLines.Add(auxLine);
-            auxLine = "\t\t\tindex++;";
-            codeLines.Add(auxLine);
         }
     }
 }
