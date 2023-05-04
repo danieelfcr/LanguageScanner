@@ -59,9 +59,7 @@ namespace Scanner
                 int terminalSymbol = new int();
 
                 Queue<Node> tokensQueue = RegularEx.GetQueueExpression(RegularEx.GetRegularExpression(rTBResult, ref token_State, ref terminalSymbol), ref symbols);
-                ExpressionTree.ExpressionTree expressionTree = new ExpressionTree.ExpressionTree(tokensQueue);
-                expressionTree.symbols = symbols;
-                expressionTree.terminalSymbol = terminalSymbol;
+                ExpressionTree.ExpressionTree expressionTree = new ExpressionTree.ExpressionTree(tokensQueue, symbols, token_State, terminalSymbol);
                 expressionTree.PostOrder(0); //assign nullable
                 expressionTree.PostOrder(1); //assign first and last
                 expressionTree.PostOrder(2); //assign follows

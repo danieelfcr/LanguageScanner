@@ -38,7 +38,7 @@ namespace Scanner.ExpressionTree
             {")", 7},
         }; 
 
-        public ExpressionTree(Queue<Node> tokenSource)
+        public ExpressionTree(Queue<Node> tokenSource, List<string> listSymbols, Dictionary<int, List<int>> tokenState, int extendedSymbol)
         {
             leafCount = 1;
             actualRow = 0;
@@ -48,6 +48,9 @@ namespace Scanner.ExpressionTree
             firstLastMatrix = new string[nodeCount, 4];
             followTable = new Dictionary<string, List<int>>();
             transitions = new Dictionary<string, TransitionSummary>();
+            symbols = listSymbols;
+            token_State = tokenState;
+            terminalSymbol = extendedSymbol;
         }
 
         void PostOrder(Node node, int op)
@@ -379,9 +382,11 @@ namespace Scanner.ExpressionTree
             {
                 //Create the first state, the first of the tree
                 string temp = string.Join(',', Root.firstList.ToArray());
-                bool isFinalState = false;
+                int stateCount = 0;
                 TransitionSummary auxTransition = new TransitionSummary(symbols);
                 auxTransition.State = Root.firstList;
+                auxTransition.StateNumber = stateCount;
+                stateCount++;
                 transitions.Add(temp, auxTransition);
 
                 Queue<string> auxTransitionQueue = new Queue<string>(); //Queue to set a transition queue where the unworked states are in
@@ -424,10 +429,12 @@ namespace Scanner.ExpressionTree
                             {
                                 TransitionSummary newTransition = new TransitionSummary(symbols);
                                 newTransition.State = transitions[temp].Transition[S];
-                                //if (transitions[temp].Transition[S].Contains('#'))
-                                //{
-
-                                //}
+                                newTransition.StateNumber = stateCount;
+                                stateCount++;
+                                if (transitions[temp].Transition[S].Contains(terminalSymbol))
+                                {
+                                    newTransition.IsFinalState = true;
+                                }
                                 transitions.Add(key, newTransition);
                                 auxTransitionQueue.Enqueue(key);
                             }
