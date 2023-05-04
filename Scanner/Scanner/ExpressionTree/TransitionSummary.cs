@@ -9,7 +9,10 @@ namespace Scanner.ExpressionTree
     public class TransitionSummary
     {
         public List<int> State { get; set; }
+        //Dictionary where the key refer to the symbol y transition to the group of numbres that represents a transition
         public Dictionary<string, List<int>> Transition { get; set; }
+        public bool IsFinalState { get; set; }
+        public int StateNumber { get; set; }
 
         public TransitionSummary(List<string> symbols)
         {

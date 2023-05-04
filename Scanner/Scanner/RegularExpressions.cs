@@ -17,15 +17,14 @@ namespace Scanner
         Regex setsRE = new Regex("(\\s*SETS(\\s)+((\\s)*([A-Z])+( |\\t)*=( |\\t)*('([a-z])'\\.\\.'([a-z])'|'([A-Z])'\\.\\.'([A-Z])'|'.'|'([0-9])'\\.\\.'([0-9])'|CHR\\((([0-9])|([0-9])([0-9])|0([0-9])([0-9])|1([0-9])([0-9])|2([0-5])([0-5]))\\)(\\.\\.CHR\\((([0-9])|([0-9])([0-9])|0([0-9])|0([0-9])([0-9])|1([0-9])([0-9])|2([0-5])([0-5]))\\))?)(( |\\t)*\\+( |\\t)*('([a-z])'\\.\\.'([a-z])'|'([A-Z])'\\.\\.'([A-Z])'|'.'|'([0-9])'\\.\\.'([0-9])'|CHR\\((([0-9])|([0-9])([0-9])|0([0-9])([0-9])|1([0-9])([0-9])|2([0-5])([0-5]))\\)(\\.\\.CHR\\((([0-9])|([0-9])([0-9])|0([0-9])|0([0-9])([0-9])|1([0-9])([0-9])|2([0-5])([0-5]))\\))?))*)+\\s*)?");
         Regex setsREVerify = new Regex("^(\\s*SETS(\\s)+((\\s)*([A-Z])+( |\\t)*=( |\\t)*('([a-z])'\\.\\.'([a-z])'|'([A-Z])'\\.\\.'([A-Z])'|'.'|'([0-9])'\\.\\.'([0-9])'|CHR\\((([0-9])|([0-9])([0-9])|0([0-9])([0-9])|1([0-9])([0-9])|2([0-5])([0-5]))\\)(\\.\\.CHR\\((([0-9])|([0-9])([0-9])|0([0-9])|0([0-9])([0-9])|1([0-9])([0-9])|2([0-5])([0-5]))\\))?)(( |\\t)*\\+( |\\t)*('([a-z])'\\.\\.'([a-z])'|'([A-Z])'\\.\\.'([A-Z])'|'.'|'([0-9])'\\.\\.'([0-9])'|CHR\\((([0-9])|([0-9])([0-9])|0([0-9])([0-9])|1([0-9])([0-9])|2([0-5])([0-5]))\\)(\\.\\.CHR\\((([0-9])|([0-9])([0-9])|0([0-9])|0([0-9])([0-9])|1([0-9])([0-9])|2([0-5])([0-5]))\\))?))*)+\\s*)$");
 
-
         //TOKENS RE---------------------------------------------------------------------------------------------------------
         Regex tokensRE = new Regex("\\s*TOKENS\\s*\\n(\\s*TOKEN( |\\t)*([1-9][0-9]*)( |\\t)*=( |\\t)*(((( |\\t)*{( |\\t)*([A-Z]+( |\\t)*\\(( |\\t)*\\)( |\\t)*)+( |\\t)*}( |\\t)*)|(([A-Z]+( |\\t)*(\\*|\\+|\\?)?)|('\\S'( |\\t)*(\\*|\\+|\\?)?))|(( |\\t)*(([A-Z]+( |\\t)*(\\*|\\+|\\?)?)|('\\S'( |\\t)*(\\*|\\+|\\?)?))+( |\\t)*\\|( |\\t)*(([A-Z]+( |\\t)*(\\*|\\+|\\?)?)|('\\S'( |\\t)*(\\*|\\+|\\?)?))( |\\t)*(\\|( |\\t)*(([A-Z]+( |\\t)*(\\*|\\+|\\?)?)|('\\S'( |\\t)*(\\*|\\+|\\?)?)( |\\t)*)+)*)|(\\(( |\\t)*(((([A-Z]+( |\\t)*(\\*|\\+|\\?)?)|('\\S'( |\\t)*(\\*|\\+|\\?)?))( |\\t)*)|(( |\\t)*(([A-Z]+( |\\t)*(\\*|\\+|\\?)?)|('\\S'( |\\t)*(\\*|\\+|\\?)?))+( |\\t)*\\|( |\\t)*(([A-Z]+( |\\t)*(\\*|\\+|\\?)?)|('\\S'( |\\t)*(\\*|\\+|\\?)?))( |\\t)*(\\|( |\\t)*(([A-Z]+( |\\t)*(\\*|\\+|\\?)?)|('\\S'( |\\t)*(\\*|\\+|\\?)?)( |\\t)*)+)*)|(\\(( |\\t)*(((([A-Z]+( |\\t)*(\\*|\\+|\\?)?)|('\\S'( |\\t)*(\\*|\\+|\\?)?))( |\\t)*)|(( |\t)*(([A-Z]+( |\\t)*(\\*|\\+|\\?)?)|('\\S'( |\\t)*(\\*|\\+|\\?)?))+( |\\t)*\\|( |\\t)*(([A-Z]+( |\\t)*(\\*|\\+|\\?)?)|('\\S'( |\\t)*(\\*|\\+|\\?)?))( |\\t)*(\\|( |\\t)*(([A-Z]+( |\\t)*(\\*|\\+|\\?)?)|('\\S'( |\\t)*(\\*|\\+|\\?)?)( |\\t)*)+)*))+\\)( |\\t)*(\\*|\\+|\\?)?))+\\)( |\\t)*(\\*|\\+|\\?)?))( |\\t)*)+)+\\s*");
-        Regex tokenRE = new Regex("TOKEN( |\\t)*([1-9][0-9]*)( |\\t)*="); //Expresión regular utilizada para evaluar si una línea corresponde a un token
+        public Regex tokenRE = new Regex("TOKEN( |\\t)*([1-9][0-9]*)( |\\t)*="); //Expresión regular utilizada para evaluar si una línea corresponde a un token
 
         //ACTIONS RE---------------------------------------------------------------------------------------------------------
         Regex actionsRE = new Regex("ACTIONS\\s*RESERVADAS\\s*\\(\\s*\\)\\s*{\\s*(([0-9]|([1-9][0-9]*))\\s*=\\s*'([A-Z]|[a-z])+'\\s*)+}\\s*(([A-Z]|[a-z])+\\s*\\(\\s*\\)\\s*{\\s*(([0-9]|([1-9][0-9]*))\\s*=\\s*'([A-Z]|[a-z])+'\\s*)+}\\s*)*");
-        Regex actionsToken = new Regex("(\\s*([0-9]|([1-9][0-9]*))\\s*=\\s*'([A-Z]|[a-z])+'\\s*)+");
-        Regex actionsFunction = new Regex("(([A-Z]|[a-z])+\\s*\\(\\s*\\)\\s*{\\s*(([0-9]|([1-9][0-9]*))\\s*=\\s*'([A-Z]|[a-z])+'\\s*)+}\\s*)*");
+        Regex actionsToken = new Regex("\\s*([0-9]|([1-9][0-9]*))\\s*=\\s*'([A-Z]|[a-z])+'\\s*");
+        Regex actionsFunction = new Regex("([A-Z]|[a-z])+\\s*\\(\\s*\\)\\s*{\\s*(([0-9]|([1-9][0-9]*))\\s*=\\s*'([A-Z]|[a-z])+'\\s*)+}\\s*");
 
         //ERROR RE-----------------------------------------------------------------------------------------------------------
         Regex errorRE = new Regex("([A-Z]*ERROR\\s*=\\s*[1-9][0-9]*\\s*)+");
@@ -78,20 +77,36 @@ namespace Scanner
         /// </summary>
         /// <param name="rich">Richtextbox that contains the grammar and it can be access line by line</param>
         /// <returns></returns>
-        public string GetRegularExpression(RichTextBox rich)
+        public string GetRegularExpression(RichTextBox rich, ref Dictionary<int, List<int>> token_State, ref int terminalSymbol)
         {
             List<string> tokens = new List<string>();
+            int numToken = new int();
+            Dictionary<int, List<int>> auxTokenDictionary = new Dictionary<int, List<int>>();
+            
+            int symbolCount = 1;
             string auxLine;
+
             for (int i = 0; i < rich.Lines.Count(); i++)
             {
+                List<int> auxlist = new List<int>();
                 if (tokenRE.IsMatch(rich.Lines[i]))
                 {
                     auxLine = rich.Lines[i];
+                    numToken = Convert.ToInt32(new Regex("[1-9][0-9]*").Match(tokenRE.Match(auxLine).Value).Value);
                     auxLine = tokenRE.Replace(auxLine, string.Empty);
                     auxLine = new Regex("{\\s*(\\w+\\s*\\(\\s*\\)\\s*)+}").Replace(auxLine, string.Empty); //expression to delete calls in tokens
+
+                    foreach (Match match in new Regex("'\\S'|[A-Za-z]+").Matches(auxLine))
+                    {
+                        auxlist.Add(symbolCount);
+                        symbolCount++;
+                    }
+                    auxTokenDictionary.Add(numToken, auxlist);
                     tokens.Add(auxLine.Trim());
                 }
             }
+            terminalSymbol = symbolCount;
+            token_State = auxTokenDictionary;
             //create re with extended Symbol
             string re = "";
             re += "(";
@@ -171,7 +186,6 @@ namespace Scanner
 
                     if (listExpression.Count > 0)
                     {
-                        int concatFlag = 0;
                         Node preNode = listExpression[listExpression.Count - 1];
 
                         if (auxNode.kindSymbol == 0 | auxNode.kindSymbol == 1 | auxNode.kindSymbol == 3)
@@ -199,6 +213,24 @@ namespace Scanner
             }
 
             return queueExpression;
+        }
+
+        /// <summary>
+        /// Function to obtain the Actions Functions used to write the code specify method in code generator process
+        /// </summary>
+        /// <param name="grammar">The complete grammar inserted</param>
+        /// <returns>A string list that contains all the text from all functions in Actions</returns>
+        public List<string> GetActionFunctions(string grammar)
+        {
+            List<string> functions = new List<string>();
+            if (actionsFunction.IsMatch(grammar))
+            {
+                foreach (Match match in actionsFunction.Matches(grammar))
+                {
+                    functions.Add(match.Value);
+                }
+            }
+            return functions;
         }
     }
 }
