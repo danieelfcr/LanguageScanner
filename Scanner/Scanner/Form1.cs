@@ -66,17 +66,6 @@ namespace Scanner
                 expressionTree.PostOrder(2); //assign follows
                 expressionTree.MakeTransitions();
 
-                CodeGenerator cg = new CodeGenerator(expressionTree, "Hola");
-                cg.GenerateCode(RegularEx.GetActionFunctions(rTBResult.Text));
-
-                string code = "";
-                foreach (string line in cg.codeLines)
-                {
-                    code += line + "\n";
-                }
-
-                rTBResult.Text = code;
-
                 AutomatonData AD = new AutomatonData(expressionTree);
                 AD.Show();
             }
