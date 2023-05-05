@@ -7,7 +7,7 @@ namespace Scanner
 {
     public partial class Form1 : Form
     {
-        string text;
+        public static string text = "";
         public Form1()
         {
             InitializeComponent();
@@ -37,8 +37,7 @@ namespace Scanner
         private void readText(string filePath)
         {
             try
-            {
-                text = "";
+            { 
                 StreamReader sr = new StreamReader(filePath);
                 text = sr.ReadToEnd();
                 sr.Close();
