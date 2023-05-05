@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -355,6 +356,7 @@ namespace Scanner
             deleteChars(ref initialText);       //Eliminar caracteres extra de la cadena
 
             string[] modifiedText = initialText.Split('\n');    //Separa la cadena por saltos de linea
+            modifiedText = modifiedText.Where(x => !string.IsNullOrEmpty(x)).ToArray(); //Eliminar espacios nulos en el array
             int finalIndex = Array.IndexOf(modifiedText, "TOKENS"); //Encuentra el indice de TOKENS, indicando que hasta ahi se evaluará
 
             if (modifiedText[0].Contains("SETS"))
@@ -362,8 +364,8 @@ namespace Scanner
 
                 //string[] sets = { "LETRA='A'..'Z'+'a'..'z'+'_'", "DIGITO  = '0'..'9'", "SIMBOL='%'" };
 
-                codeLines.Add("static String identify_SET(char lexeme) {"); //Inicia funcion de SETS
-                codeLines.Add("int lexeme_value = (int)lexeme;");
+                codeLines.Add("\nstatic String identify_SET(char lexeme) {"); //Inicia funcion de SETS
+                codeLines.Add("\tint lexeme_value = (int)lexeme;");
 
                 for (int i = 1; i < finalIndex; i++)
                 {
@@ -384,25 +386,26 @@ namespace Scanner
                             conjuntosSet[j] = conjuntosSet[j].Replace("..", "$");
                             string[] limites = conjuntosSet[j].Split('$');
 
-                            codeLines.Add("int " + nombreSet + j + "_INFERIOR = (int)" + limites[0] + ";");
-                            codeLines.Add("int " + nombreSet + j + "_SUPERIOR = (int)" + limites[1] + ";");
+                            codeLines.Add("\tint " + nombreSet + j + "_INFERIOR = (int)" + limites[0] + ";");
+                            codeLines.Add("\tint " + nombreSet + j + "_SUPERIOR = (int)" + limites[1] + ";");
 
-                            codeLines.Add("if (lexeme_value >= " + nombreSet + j + "_INFERIOR  && lexeme_value <= " + nombreSet + j + "_SUPERIOR)");
-                            codeLines.Add("return \"" + nombreSet + "\";");
+                            codeLines.Add("\tif (lexeme_value >= " + nombreSet + j + "_INFERIOR  && lexeme_value <= " + nombreSet + j + "_SUPERIOR)");
+                            codeLines.Add("\t\treturn \"" + nombreSet + "\";");
 
                         }
                         else //Es valor unico 
                         {
-                            codeLines.Add("int " + nombreSet + j + "_ONLY = (int)" + conjuntosSet[j] + ";");
+                            codeLines.Add("\tint " + nombreSet + j + "_ONLY = (int)" + conjuntosSet[j] + ";");
 
-                            codeLines.Add("if (lexeme_value == " + nombreSet + j + "_ONLY)");
-                            codeLines.Add("return \"" + nombreSet + "\";");
+                            codeLines.Add("\tif (lexeme_value == " + nombreSet + j + "_ONLY)");
+                            codeLines.Add("\t\treturn \"" + nombreSet + "\";");
 
                         }
 
                     }
 
                 }
+                codeLines.Add("}");
             }
         }
 
