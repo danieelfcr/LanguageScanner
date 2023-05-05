@@ -323,15 +323,15 @@ namespace Scanner
             if (modifiedText[0].Contains("SETS"))
             {
 
-                string[] sets = { "LETRA='A'..'Z'+'a'..'z'+'_'", "DIGITO  = '0'..'9'", "SIMBOL='%'" };
+                //string[] sets = { "LETRA='A'..'Z'+'a'..'z'+'_'", "DIGITO  = '0'..'9'", "SIMBOL='%'" };
 
                 codeLines.Add("static String identify_SET(char lexeme) {"); //Inicia funcion de SETS
                 codeLines.Add("int lexeme_value = (int)lexeme;");
 
                 for (int i = 1; i < finalIndex; i++)
                 {
-                    string nombreSet = sets[i].Split('=')[0].Trim();
-                    string valorSet = sets[i].Split('=')[1].Trim();
+                    string nombreSet = modifiedText[i].Split('=')[0].Trim();
+                    string valorSet = modifiedText[i].Split('=')[1].Trim();
                     string[] conjuntosSet;
 
 
