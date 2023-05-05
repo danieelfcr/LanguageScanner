@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -23,6 +24,7 @@ namespace Scanner.ExpressionTree
 
         public Dictionary<string, TransitionSummary> transitions { get; set; }
 
+        public Queue<Node> generalTokenSource; 
         public int terminalSymbol { get; set; }         //It refers to the number that represents the terminal symbol in the follow calculate
 
         public Dictionary<int, TokenSummary> tokenInformation { get; set; }     //Dictionary to save the information that join tokens with states, key = # od token, value = numbers that represents the symbols used in the states
@@ -249,6 +251,7 @@ namespace Scanner.ExpressionTree
 
         private Node CreateTree(Queue<Node> tokenSource)
         {
+            generalTokenSource = new Queue<Node>(tokenSource); 
             Stack<Node> T = new Stack<Node>(); //Stack of tokens
             Stack<Node> S = new Stack<Node>(); //Stack of trees
 
