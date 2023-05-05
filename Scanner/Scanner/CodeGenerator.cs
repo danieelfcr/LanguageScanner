@@ -16,15 +16,18 @@ namespace Scanner
         public List<string> codeLines;
         private string fileName;
         private ExpressionTree.ExpressionTree expressionTree;
+        List<string> actionFunctions;
 
-        public CodeGenerator(ExpressionTree.ExpressionTree expressionTree, string fileName)
+        public CodeGenerator(ExpressionTree.ExpressionTree expressionTree, string fileName, List<string> actionFunctions)
         {
             this.expressionTree = expressionTree;
             this.fileName = fileName;
             codeLines = new List<string>();
+            this.actionFunctions = actionFunctions;
+            GenerateCode();
         }
 
-        public void GenerateCode(List<string> actionFunctions)
+        public void GenerateCode()
         {
             codeLines.Add("import java.util.Scanner;");
             codeLines.Add("public class " + fileName + " {");
@@ -303,10 +306,44 @@ namespace Scanner
               AGREGÁNDOLE A LA VARIABLE CODELINES LAS LÍNEAS DE CÓDIGO */
         }
 
+        /// <summary>
+        /// Procedure to add to the codeLines the lines about identify_TERMINAL function that uses generalTokenList from ExpressionTree class 
+        /// </summary>
+        /// <param name="codeLines">List with all the lines of the Java Program.</param>
+
         public void GenerateIdentifyTerminal()
         {
-            /*AGREGAR EL CÓDIGO QUE ESCRIBA LA FUNCIÓN IDENTIFY_TERMINAL EN CÓDIGO JAVA 
-              AGREGÁNDOLE A LA VARIABLE CODELINES LAS LÍNEAS DE CÓDIGO */
+            string prueba = "";
+            codeLines.Add("static String identify_TERMINAL(char lexeme) {\n");
+            prueba += "static String identify_TERMINAL(char lexeme) {\n";
+            List<string> alreadyUsedTokens = new List<string>();
+            foreach (Node node in expressionTree.generalTokenSource)
+            {
+                if (node.kindSymbol == 0 && !alreadyUsedTokens.Contains(node.symbol) && node.symbol != "'#'") //terminal symbol
+                {
+                    alreadyUsedTokens.Add(node.symbol);
+                    string symbol = node.symbol[1].ToString();
+
+                    codeLines.Add("\t\tif (lexeme == \'" + symbol + "\')\n");
+                    codeLines.Add("\t\t\t\treturn \"" + symbol + "\";\n");
+
+                    prueba += "\t\tif (lexeme == \'" + symbol + "\')\n";
+                    prueba += "\t\t\t\treturn \"" + symbol + "\";\n";
+
+                }
+            }
+
+            codeLines.Add("\t\tif (lexeme == \' " + "\')\n");
+            codeLines.Add("\t\t\t\treturn \"BLANK_SPACE\";\n");
+
+            codeLines.Add("\t\treturn \"\";\n");
+            codeLines.Add("}");
+
+
+            prueba += "\t\tif (lexeme == \' " + "\')\n";
+            prueba += "\t\t\t\treturn \"BLANK_SPACE\";\n";
+            prueba += "\t\treturn \"\";\n";
+            prueba += "}";
         }
 
         public void GenerateIdentifySet()
