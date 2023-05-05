@@ -13,6 +13,8 @@ namespace Scanner
             InitializeComponent();
         }
 
+        public string fileName;
+
         private void btnOpenFile_Click(object sender, EventArgs e)
         {
             using (OpenFileDialog openFileDialog1 = new OpenFileDialog())
@@ -28,6 +30,7 @@ namespace Scanner
                 MessageBox.Show("File was uploaded succesfully!");
                 rTBResult.Text = text;
                 rTBResult.BackColor = Color.White;
+                fileName = Path.GetFileNameWithoutExtension(openFileDialog1.FileName);
             }
         }
 
@@ -68,6 +71,9 @@ namespace Scanner
 
                 AutomatonData AD = new AutomatonData(expressionTree);
                 AD.Show();
+
+                //creation of the CodeGenerator class
+                CodeGenerator cd = new CodeGenerator(expressionTree, fileName, RegularEx.GetActionFunctions(rTBResult.Text));
             }
             else
             {
