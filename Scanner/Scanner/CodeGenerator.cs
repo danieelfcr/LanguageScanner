@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms.Design;
 using Scanner.ExpressionTree;
@@ -12,7 +13,7 @@ namespace Scanner
     public class CodeGenerator
     {
 
-        private List<string> codeLines;
+        public List<string> codeLines;
         private string fileName;
         private ExpressionTree.ExpressionTree expressionTree;
 
@@ -21,10 +22,9 @@ namespace Scanner
             this.expressionTree = expressionTree;
             this.fileName = fileName;
             codeLines = new List<string>();
-            
         }
 
-        public void GenerateCode()
+        public void GenerateCode(List<string> actionFunctions)
         {
             codeLines.Add("import java.util.Scanner;");
             codeLines.Add("public class " + fileName + " {");
@@ -39,7 +39,7 @@ namespace Scanner
 
             //AQUI VA EL WHILE PRINCIPAL (PODRIA MANDARSE A LLAMAR A UN MÉTODO QUE LO HAGA A PARTE)
 
-            
+            GenerateMainWhile();
 
             //AQUI TERMINA EL WHILE PRINCIPAL
 
@@ -49,7 +49,7 @@ namespace Scanner
 
             GenerateIdentifySet();
 
-            GenerateReservadas();
+            GenerateActionFunctions(actionFunctions);
 
             codeLines.Add("}"); //FINAL DEL PROGRAMA JAVA
 
@@ -59,6 +59,242 @@ namespace Scanner
             string[] lines = codeLines.ToArray();
             File.WriteAllLines(fileName + ".java", lines);
             MessageBox.Show("Program created without problems");
+        }
+
+        public void GenerateMainWhile()
+        {
+            string auxLine;
+            auxLine = "\t\tWhile (index < program.length()) {";
+            codeLines.Add(auxLine);
+            auxLine = "\t\t\tchar lexeme = program.charAt(index);";
+            codeLines.Add(auxLine);
+            auxLine = "\t\t\tString symbol = indentify_SET(lexeme);";
+            codeLines.Add(auxLine);
+            auxLine = "\t\t\tif (symbol.equals(\"\")) {";
+            codeLines.Add(auxLine);
+            auxLine = "\t\t\t\tsymbol = identify_TERMINAL(lexeme);";
+            codeLines.Add(auxLine);
+            auxLine = "\t\t\t}";
+            codeLines.Add(auxLine);
+            auxLine = "\t\t\tif (symbol.equals(\"\")) {";
+            codeLines.Add(auxLine);
+            auxLine = "\t\t\t\tSystem.out.println(\"Simbolo no reconocido\");";
+            codeLines.Add(auxLine);
+            auxLine = "\t\t\t\tbreak;";
+            codeLines.Add(auxLine);
+            auxLine = "\t\t\t}\n";
+            codeLines.Add(auxLine);
+
+            auxLine = "\t\t\tswitch (actual_state) {";
+            codeLines.Add(auxLine);
+
+            //Print the respective values for each state
+            foreach (KeyValuePair<string, TransitionSummary> kvp in expressionTree.transitions)
+            {
+                string transition = kvp.Key;
+                TransitionSummary state = expressionTree.transitions[transition];
+                auxLine = "\t\t\t\tcase " + state.StateNumber + ": {";
+                codeLines.Add(auxLine);
+
+                //Evalute to define if is a final state, a repetitive state, initial state or middle state
+                //it refers to the initial state
+                if (state.StateNumber == 0)
+                {
+                    auxLine = "\t\t\t\t\tswitch (symbol)";
+                    codeLines.Add(auxLine);
+                    auxLine = "\t\t\t\t\t{";
+                    codeLines.Add(auxLine);
+
+                    foreach (string symbol in expressionTree.symbols)
+                    {
+                        if (expressionTree.transitions[transition].Transition[symbol].Count > 0)
+                        {
+                            auxLine = "\t\t\t\t\t\tcase \"" + symbol + "\":{";
+                            codeLines.Add(auxLine);
+                            string nextState = string.Join(',', expressionTree.transitions[transition].Transition[symbol]);
+                            auxLine = "\t\t\t\t\t\t\tactual_state = " + expressionTree.transitions[nextState].StateNumber + ";";
+                            codeLines.Add(auxLine);
+                            auxLine = "\t\t\t\t\t\t\tcommand += lexeme;";
+                            codeLines.Add(auxLine);
+                            auxLine = "\t\t\t\t\t\t}break;\n";
+                            codeLines.Add(auxLine);
+                        }
+                    }
+
+                    auxLine = "\t\t\t\t\t\tcase \"BLANK_SPACE\":{";
+                    codeLines.Add(auxLine);
+                    auxLine = "\t\t\t\t\t\t\tactual_state = 0;";
+                    codeLines.Add(auxLine);
+                    auxLine = "\t\t\t\t\t\t\tcommand = \"\";";
+                    codeLines.Add(auxLine);
+                    auxLine = "\t\t\t\t\t\t}break;";
+                    codeLines.Add(auxLine);
+
+                    auxLine = "\t\t\t\t\t\tdefault:{";
+                    codeLines.Add(auxLine);
+                    auxLine = "\t\t\t\t\t\t\tSystem.out.println(\"Simbolo no reconocido\")";
+                    codeLines.Add(auxLine);
+                    auxLine = "\t\t\t\t\t\t}break;";
+                    codeLines.Add(auxLine);
+
+                    auxLine = "\t\t\t\t\t}";
+                    codeLines.Add(auxLine);
+                }
+                //It is a final state it must evaluate all the symbols in the case
+                else if (state.State.Count == 1 && state.State[0] == expressionTree.terminalSymbol)
+                {
+                    auxLine = "\t\t\t\t\tswitch (symbol)";
+                    codeLines.Add(auxLine);
+                    auxLine = "\t\t\t\t\t{";
+                    codeLines.Add(auxLine);
+
+                    auxLine = "\t\t\t\t\t\tcase \"BLANK_SPACE\":{";
+                    codeLines.Add(auxLine);
+
+                    foreach (KeyValuePair<int, TokenSummary> ss in expressionTree.tokenInformation)
+                    {
+                        string value = ss.Value.TokenValue;
+                        if (new Regex("('\\S|\\s')+").IsMatch(value))
+                        {
+                            int n = ss.Key;
+                            auxLine = "\t\t\t\t\t\t\tif (command.equals(\"" + new Regex("'").Replace(value, string.Empty) + "\"))";
+                            codeLines.Add(auxLine);
+                            auxLine = "\t\t\t\t\t\t\t\tSystem.out.println(\"TOKEN " + n + "\");";
+                            codeLines.Add(auxLine);
+                        }
+                    }
+                    auxLine = "\t\t\t\t\t\t\tactual_state = 0;";
+                    codeLines.Add(auxLine);
+                    auxLine = "\t\t\t\t\t\t\tcommand = \"\";";
+                    codeLines.Add(auxLine);
+                    auxLine = "\t\t\t\t\t\t}break;";
+                    codeLines.Add(auxLine);
+
+                    auxLine = "\t\t\t\t\t\tdefault:{";
+                    codeLines.Add(auxLine);
+                    auxLine = "\t\t\t\t\t\t\tSystem.out.println(\"Simbolo no reconocido\")";
+                    codeLines.Add(auxLine);
+                    auxLine = "\t\t\t\t\t\t}break;";
+                    codeLines.Add(auxLine);
+
+                    auxLine = "\t\t\t\t\t}";
+                    codeLines.Add(auxLine);
+                }
+                //It is the case for a middle state without the extendeSymbol
+                else if (!state.State.Contains(expressionTree.terminalSymbol))
+                {
+                    auxLine = "\t\t\t\t\tswitch (symbol)";
+                    codeLines.Add(auxLine);
+                    auxLine = "\t\t\t\t\t{";
+                    codeLines.Add(auxLine);
+
+                    string expected = "";
+                    foreach (KeyValuePair<string, List<int>> tt in state.Transition)
+                    {
+                        if (tt.Value.Count > 0)
+                        {
+                            string value = tt.Key;
+                            expected = new Regex("'").Replace(value, string.Empty) + " ";
+                            auxLine = "\t\t\t\t\t\tcase \"" + new Regex("'").Replace(value, string.Empty) + "\":{";
+                            codeLines.Add(auxLine);
+
+                            int n = expressionTree.transitions[string.Join(',', tt.Value.ToArray())].StateNumber;
+
+                            auxLine = "\t\t\t\t\t\t\tactual state = " + n + ";";
+                            codeLines.Add(auxLine);
+                            auxLine = "\t\t\t\t\t\t\tcommand += lexeme;";
+                        }
+                    }
+
+                    auxLine = "\t\t\t\t\t\tdefault:{";
+                    codeLines.Add(auxLine);
+                    auxLine = "\t\t\t\t\t\t\tSystem.out.println(\"Se esperaba \" + \"" + expected + "\")";
+                    codeLines.Add(auxLine);
+                    auxLine = "\t\t\t\t\t\t}break;";
+                    codeLines.Add(auxLine);
+
+                    auxLine = "\t\t\t\t\t}";
+                    codeLines.Add(auxLine);
+                }
+                //It is a repetitive state
+                else
+                {
+                    auxLine = "\t\t\t\t\tswitch (symbol)";
+                    codeLines.Add(auxLine);
+                    auxLine = "\t\t\t\t\t{";
+                    codeLines.Add(auxLine);
+
+                    string expected = "";
+                    foreach (KeyValuePair<string, List<int>> tt in state.Transition)
+                    {
+                        if (tt.Value.Count > 0)
+                        {
+                            string value = tt.Key;
+                            expected = value + " ";
+                            auxLine = "\t\t\t\t\t\tcase \"" + new Regex("'").Replace(value, string.Empty) + "\":{";
+                            codeLines.Add(auxLine);
+
+                            int n = expressionTree.transitions[string.Join(',', tt.Value.ToArray())].StateNumber;
+
+                            auxLine = "\t\t\t\t\t\t\tactual state = " + n + ";";
+                            codeLines.Add(auxLine);
+                            auxLine = "\t\t\t\t\t\t\tcommand += lexeme;";
+                        }
+                    }
+
+                    auxLine = "\t\t\t\t\t\tcase \"BLANK_SPACE\":{";
+                    codeLines.Add(auxLine);
+
+                    int newState = expressionTree.tokenInformation[state.StateNumber].TokenNumber;
+                    if (expressionTree.tokenInformation[state.StateNumber].CallMethod)
+                    {
+                        auxLine = "\t\t\t\t\t\t\tSystem.out.println(" + expressionTree.tokenInformation[state.StateNumber].Method + "(command, " + newState + "));";
+                        codeLines.Add(auxLine);
+                    }
+                    else
+                    {
+                        auxLine = "\t\t\t\t\t\t\tSystem.out.println(\"TOKEN " + newState + "\")";
+                        codeLines.Add(auxLine);
+                    }
+
+                    auxLine = "\t\t\t\t\t\t\tactual_state = 0;";
+                    codeLines.Add(auxLine);
+                    auxLine = "\t\t\t\t\t\t\tcommand = \"\";";
+                    codeLines.Add(auxLine);
+                    auxLine = "\t\t\t\t\t\t}break;";
+
+                    auxLine = "\t\t\t\t\t\tdefault:{";
+                    codeLines.Add(auxLine);
+                    auxLine = "\t\t\t\t\t\t\tSystem.out.println(\"Se esperaba \" + \"" + expected + "\")";
+                    codeLines.Add(auxLine);
+                    auxLine = "\t\t\t\t\t\t}break;";
+                    codeLines.Add(auxLine);
+
+                    auxLine = "\t\t\t\t\t}";
+                    codeLines.Add(auxLine);
+                }
+
+                auxLine = "\t\t\t\t}break;\n";
+                codeLines.Add(auxLine);
+            }
+
+            auxLine = "\t\t\t}";
+            codeLines.Add(auxLine);
+            auxLine = "\t\t\tindex++;";
+            codeLines.Add(auxLine);
+            auxLine = "\t\t}\n";
+            codeLines.Add(auxLine);
+
+            auxLine = "\t\tif (isFinalState(actual_state, final_states) && index == program.length()) {";
+            codeLines.Add(auxLine);
+            auxLine = "\t\t\tSystem.out.println(\"PROGRAMA CORRECTO\");";
+            codeLines.Add(auxLine);
+            auxLine = "\t\t} else {";
+            codeLines.Add(auxLine);
+            auxLine = "\t\t\tSystem.out.println(\"FALLO EN EL PROGRAMA\");";
+            codeLines.Add(auxLine);
+            auxLine = "\t\t}";
+            codeLines.Add(auxLine);
         }
 
         public void GenerateIsFinalState()
@@ -133,10 +369,39 @@ namespace Scanner
             }
         }
 
-        public void GenerateReservadas()
+
+        /// <summary>
+        /// Procedure to add to the codeLines the lines about Actions fuction that is call for a Token that have a actions call in
+        /// </summary>
+        /// <param name="codeLines">List with all the lines of the Java Program.</param>
+        /// <param name="functions">It refers to all the actions that were found in the grammar and each elemend is an action function.</param>
+        public void GenerateActionFunctions(List<string> functions)
         {
-            /*AGREGAR EL CÓDIGO QUE ESCRIBA LA FUNCIÓN  RESERVADAS EN CÓDIGO JAVA 
-              AGREGÁNDOLE A LA VARIABLE CODELINES LAS LÍNEAS DE CÓDIGO */
+            string auxLine;
+            foreach (string function in functions)
+            {
+                string funName = new Regex("\\s*[A-Za-z]+\\s*\\(\\s*\\)\\s*").Match(function).Value;
+                funName = new Regex("\\s*\\(\\s*\\)\\s*").Replace(funName, string.Empty).Trim();
+                auxLine = "\tstatic String " + funName + " (String command, int state) {";
+                codeLines.Add(auxLine);
+
+                foreach (Match match in new Regex("\\s*([0-9]|([1-9][0-9]*))\\s*=\\s*'([A-Z]|[a-z])+'\\s*").Matches(function))
+                {
+                    string acToken = match.Value;
+                    string num = new Regex("[1-9][0-9]*").Match(acToken).Value;
+                    string word = new Regex("[A-Za-z]+").Match(acToken).Value;
+
+                    auxLine = "\t\tif (command.equalsIsIgnoreCase(\"" + word + "\"))";
+                    codeLines.Add(auxLine);
+                    auxLine = "\t\t\treturn \"TOKEN " + num + "\";";
+                    codeLines.Add(auxLine);
+                }
+
+                auxLine = "\t\treturn \"TOKEN \" + state.toString();";
+                codeLines.Add(auxLine);
+                auxLine = "\t}";
+                codeLines.Add(auxLine);
+            }
         }
 
 

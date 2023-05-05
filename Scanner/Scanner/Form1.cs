@@ -1,5 +1,7 @@
 using Scanner.ExpressionTree;
+using System.CodeDom.Compiler;
 using System.IO;
+using System.Runtime.InteropServices;
 
 namespace Scanner
 {
@@ -52,11 +54,12 @@ namespace Scanner
                 MessageBox.Show("Grammar is correctly defined");
                 rTBResult.BackColor = Color.Green;
                 
-                List<string> symbols = new List<string>();
+                List<string> symbols = new List<string>();  //List to know all the different symbols for the grammar
+                Dictionary<int, TokenSummary> tokenSummary = new Dictionary<int, TokenSummary>();      //Dictionary used to refer a token to a group of values that describes a state
+                int terminalSymbol = new int();
 
-                Queue<Node> tokensQueue = RegularEx.GetQueueExpression(RegularEx.GetRegularExpression(rTBResult), ref symbols);
-                ExpressionTree.ExpressionTree expressionTree = new ExpressionTree.ExpressionTree(tokensQueue);
-                expressionTree.symbols = symbols;
+                Queue<Node> tokensQueue = RegularEx.GetQueueExpression(RegularEx.GetRegularExpression(rTBResult, ref tokenSummary, ref terminalSymbol), ref symbols);
+                ExpressionTree.ExpressionTree expressionTree = new ExpressionTree.ExpressionTree(tokensQueue, symbols, tokenSummary, terminalSymbol);
                 expressionTree.PostOrder(0); //assign nullable
                 expressionTree.PostOrder(1); //assign first and last
                 expressionTree.PostOrder(2); //assign follows

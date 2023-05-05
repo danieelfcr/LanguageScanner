@@ -23,6 +23,10 @@ namespace Scanner.ExpressionTree
 
         public Dictionary<string, TransitionSummary> transitions { get; set; }
 
+        public int terminalSymbol { get; set; }         //It refers to the number that represents the terminal symbol in the follow calculate
+
+        public Dictionary<int, TokenSummary> tokenInformation { get; set; }     //Dictionary to save the information that join tokens with states, key = # od token, value = numbers that represents the symbols used in the states
+
         private Dictionary<string, int> operatorHierarchy = new Dictionary<string, int>() //symbol, number in the hierarchy
         {
             {"|", 1},
@@ -34,7 +38,7 @@ namespace Scanner.ExpressionTree
             {")", 7},
         }; 
 
-        public ExpressionTree(Queue<Node> tokenSource)
+        public ExpressionTree(Queue<Node> tokenSource, List<string> listSymbols, Dictionary<int, TokenSummary> tokenSum, int extendedSymbol)
         {
             leafCount = 1;
             actualRow = 0;
@@ -44,6 +48,9 @@ namespace Scanner.ExpressionTree
             firstLastMatrix = new string[nodeCount, 4];
             followTable = new Dictionary<string, List<int>>();
             transitions = new Dictionary<string, TransitionSummary>();
+            symbols = listSymbols;
+            terminalSymbol = extendedSymbol;
+            tokenInformation = tokenSum;
         }
 
         void PostOrder(Node node, int op)
@@ -69,7 +76,6 @@ namespace Scanner.ExpressionTree
                 }
             }
         }
-        
 
         //Llamar a este metodo para iniciar operaciones. "OP" es la operacion que se desea realizar "Nullable, First/Last, Follow"
         public void PostOrder(int op)
@@ -375,11 +381,14 @@ namespace Scanner.ExpressionTree
             {
                 //Create the first state, the first of the tree
                 string temp = string.Join(',', Root.firstList.ToArray());
+                int stateCount = 0;
                 TransitionSummary auxTransition = new TransitionSummary(symbols);
                 auxTransition.State = Root.firstList;
+                auxTransition.StateNumber = stateCount;
+                stateCount++;
                 transitions.Add(temp, auxTransition);
 
-                Queue<string> auxTransitionQueue = new Queue<string>(); //Queue to set a transactions queue where the unworked states are in
+                Queue<string> auxTransitionQueue = new Queue<string>(); //Queue to set a transition queue where the unworked states are in
                 auxTransitionQueue.Enqueue(temp);
 
                 //Iterative process with each state
@@ -419,6 +428,12 @@ namespace Scanner.ExpressionTree
                             {
                                 TransitionSummary newTransition = new TransitionSummary(symbols);
                                 newTransition.State = transitions[temp].Transition[S];
+                                newTransition.StateNumber = stateCount;
+                                stateCount++;
+                                if (transitions[temp].Transition[S].Contains(terminalSymbol))
+                                {
+                                    newTransition.IsFinalState = true;
+                                }
                                 transitions.Add(key, newTransition);
                                 auxTransitionQueue.Enqueue(key);
                             }
