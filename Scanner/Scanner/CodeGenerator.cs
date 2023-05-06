@@ -113,7 +113,21 @@ namespace Scanner
                     {
                         if (expressionTree.transitions[transition].Transition[symbol].Count > 0)
                         {
-                            auxLine = "\t\t\t\t\t\tcase \"" + symbol + "\":{";
+                            if (new Regex("'\\S'").IsMatch(symbol))
+                            {
+                                if (symbol[1].Equals('"'))
+                                {
+                                    auxLine = "\t\t\t\t\t\tcase \"\\" + symbol[1] + "\":{";
+                                }
+                                else
+                                {
+                                    auxLine = "\t\t\t\t\t\tcase \"" + symbol[1] + "\":{";
+                                }
+                            }
+                            else
+                            {
+                                auxLine = "\t\t\t\t\t\tcase \"" + symbol.Replace("'", string.Empty) + "\":{";
+                            }
                             codeLines.Add(auxLine);
                             string nextState = string.Join(',', expressionTree.transitions[transition].Transition[symbol]);
                             auxLine = "\t\t\t\t\t\t\tactual_state = " + expressionTree.transitions[nextState].StateNumber + ";";
@@ -158,7 +172,7 @@ namespace Scanner
                     foreach (KeyValuePair<int, TokenSummary> ss in expressionTree.tokenInformation)
                     {
                         string value = ss.Value.TokenValue;
-                        if (new Regex("('\\S|\\s')+").IsMatch(value))
+                        if (!new Regex("\\w\\w+").IsMatch(value))
                         {
                             int n = ss.Key;
                             auxLine = "\t\t\t\t\t\t\tif (command.equals(\"" + new Regex("'").Replace(value, string.Empty) + "\"))";
@@ -198,8 +212,26 @@ namespace Scanner
                         if (tt.Value.Count > 0)
                         {
                             string value = tt.Key;
-                            expected = new Regex("'").Replace(value, string.Empty) + " ";
-                            auxLine = "\t\t\t\t\t\tcase \"" + new Regex("'").Replace(value, string.Empty) + "\":{";
+
+                            if (new Regex("'\\S'").IsMatch(value))
+                            {
+                                if (value[1].Equals('"'))
+                                {
+                                    auxLine = "\t\t\t\t\t\tcase \"\\" + value[1] + "\":{";
+                                    expected += "\\" + value[1] + " ";
+                                }
+                                else
+                                {
+                                    auxLine = "\t\t\t\t\t\tcase \"" + value[1] + "\":{";
+                                    expected += value[1] + " ";
+                                }
+                            }
+                            else
+                            {
+                                auxLine = "\t\t\t\t\t\tcase \"" + value.Replace("'", string.Empty) + "\":{";
+                                expected += new Regex("'").Replace(value, string.Empty) + " ";
+                            }
+
                             codeLines.Add(auxLine);
 
                             int n = expressionTree.transitions[string.Join(',', tt.Value.ToArray())].StateNumber;
@@ -207,6 +239,9 @@ namespace Scanner
                             auxLine = "\t\t\t\t\t\t\tactual state = " + n + ";";
                             codeLines.Add(auxLine);
                             auxLine = "\t\t\t\t\t\t\tcommand += lexeme;";
+                            codeLines.Add(auxLine);
+                            auxLine = "\t\t\t\t\t\t}break;";
+                            codeLines.Add(auxLine);
                         }
                     }
 
@@ -234,8 +269,26 @@ namespace Scanner
                         if (tt.Value.Count > 0)
                         {
                             string value = tt.Key;
-                            expected = value + " ";
-                            auxLine = "\t\t\t\t\t\tcase \"" + new Regex("'").Replace(value, string.Empty) + "\":{";
+                            
+                            if (new Regex("'\\S'").IsMatch(value))
+                            {
+                                if (value[1].Equals("\""))
+                                {
+                                    auxLine = "\t\t\t\t\t\tcase \"\\" + value[1] + "\":{";
+                                }
+                                else
+                                {
+                                    auxLine = "\t\t\t\t\t\tcase \"" + value[1] + "\":{";
+                                }
+                                expected += value[1] + " ";
+
+                            }
+                            else
+                            {
+                                auxLine = "\t\t\t\t\t\tcase \"" + value.Replace("'", string.Empty) + "\":{";
+                                expected += value.Replace("'", string.Empty) + " ";
+                            }
+
                             codeLines.Add(auxLine);
 
                             int n = expressionTree.transitions[string.Join(',', tt.Value.ToArray())].StateNumber;
@@ -243,6 +296,9 @@ namespace Scanner
                             auxLine = "\t\t\t\t\t\t\tactual state = " + n + ";";
                             codeLines.Add(auxLine);
                             auxLine = "\t\t\t\t\t\t\tcommand += lexeme;";
+                            codeLines.Add(auxLine);
+                            auxLine = "\t\t\t\t\t\t}break;";
+                            codeLines.Add(auxLine);
                         }
                     }
 
@@ -266,6 +322,7 @@ namespace Scanner
                     auxLine = "\t\t\t\t\t\t\tcommand = \"\";";
                     codeLines.Add(auxLine);
                     auxLine = "\t\t\t\t\t\t}break;";
+                    codeLines.Add(auxLine);
 
                     auxLine = "\t\t\t\t\t\tdefault:{";
                     codeLines.Add(auxLine);
