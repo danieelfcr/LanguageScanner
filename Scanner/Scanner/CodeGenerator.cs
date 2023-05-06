@@ -32,14 +32,14 @@ namespace Scanner
         {
             codeLines.Add("import java.util.Scanner;");
             codeLines.Add("public class " + fileName + " {");
-            codeLines.Add("\tpublic static void main(String[] args) {");
-            codeLines.Add("\tSystem.out.println(\"Enter your program\");");
-            codeLines.Add("\tScanner in = new Scanner(System.in);");
-            codeLines.Add("\tString program = in.nextLine() + \" \";");
-            codeLines.Add("\tint index = 0;");
-            codeLines.Add("\tint actual_state = 0;");
-            codeLines.Add("\tint[] final_states = {" + "};" ); //AGREGAR LOS ESTADOS FINALES
-            codeLines.Add("\tString command = \"\";");
+            codeLines.Add("public static void main(String[] args) {");
+            codeLines.Add("System.out.println(\"Enter your program\");");
+            codeLines.Add("Scanner in = new Scanner(System.in);");
+            codeLines.Add("String program = in.nextLine() + \" \";");
+            codeLines.Add("int index = 0;");
+            codeLines.Add("int actual_state = 0;");
+            codeLines.Add("int[] final_states = {" + finalStates() + "};" ); //AGREGAR LOS ESTADOS FINALES
+            codeLines.Add("String command = \"\";");
 
             //AQUI VA EL WHILE PRINCIPAL (PODRIA MANDARSE A LLAMAR A UN MÉTODO QUE LO HAGA A PARTE)
 
@@ -454,5 +454,18 @@ namespace Scanner
             initialText = initialText3.Replace("\r", string.Empty); // elimina los retornos de carro
         }
 
+        string finalStates()
+        {
+            string states = "0,";
+            foreach (var item in expressionTree.transitions)
+            {
+                if (item.Value.IsFinalState)
+                {
+                    states += item.Value.StateNumber + ",";
+                }
+            }
+            states = states.Substring(0, states.Length - 1); //Eliminar la ultima coma
+            return states;
+        }
     }
 }
