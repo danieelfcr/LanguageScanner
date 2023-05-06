@@ -45,6 +45,7 @@ namespace Scanner
 
             GenerateMainWhile();
 
+            codeLines.Add("}");
             //AQUI TERMINA EL WHILE PRINCIPAL
 
             GenerateIsFinalState();
@@ -315,8 +316,8 @@ namespace Scanner
         public void GenerateIdentifyTerminal()
         {
             string prueba = "";
-            codeLines.Add("static String identify_TERMINAL(char lexeme) {\n");
-            prueba += "static String identify_TERMINAL(char lexeme) {\n";
+            codeLines.Add("static String identify_TERMINAL(char lexeme) {");
+            prueba += "static String identify_TERMINAL(char lexeme) {";
             List<string> alreadyUsedTokens = new List<string>();
             foreach (Node node in expressionTree.generalTokenSource)
             {
@@ -325,26 +326,26 @@ namespace Scanner
                     alreadyUsedTokens.Add(node.symbol);
                     string symbol = node.symbol[1].ToString();
 
-                    codeLines.Add("\t\tif (lexeme == \'" + symbol + "\')\n");
-                    codeLines.Add("\t\t\t\treturn \"" + symbol + "\";\n");
+                    codeLines.Add("\t\tif (lexeme == \'" + symbol + "\')");
+                    codeLines.Add("\t\t\t\treturn \"" + symbol + "\";");
 
-                    prueba += "\t\tif (lexeme == \'" + symbol + "\')\n";
-                    prueba += "\t\t\t\treturn \"" + symbol + "\";\n";
+                    prueba += "\t\tif (lexeme == \'" + symbol + "\')";
+                    prueba += "\t\t\t\treturn \"" + symbol + "\";";
 
                 }
             }
 
-            codeLines.Add("\t\tif (lexeme == \' " + "\')\n");
-            codeLines.Add("\t\t\t\treturn \"BLANK_SPACE\";\n");
+            codeLines.Add("\t\tif (lexeme == \' " + "\')");
+            codeLines.Add("\t\t\t\treturn \"BLANK_SPACE\";");
 
             codeLines.Add("\t\treturn \"\";\n");
-            codeLines.Add("}");
+            codeLines.Add("\t}");
 
 
-            prueba += "\t\tif (lexeme == \' " + "\')\n";
-            prueba += "\t\t\t\treturn \"BLANK_SPACE\";\n";
-            prueba += "\t\treturn \"\";\n";
-            prueba += "}";
+            prueba += "\t\tif (lexeme == \' " + "\')";
+            prueba += "\t\t\t\treturn \"BLANK_SPACE\";";
+            prueba += "\t\treturn \"\";";
+            prueba += "\t}";
         }
 
         public void GenerateIdentifySet()
