@@ -38,7 +38,7 @@ namespace Scanner
             codeLines.Add("String program = in.nextLine() + \" \";");
             codeLines.Add("int index = 0;");
             codeLines.Add("int actual_state = 0;");
-            codeLines.Add("int[] final_states = {" + "};" ); //AGREGAR LOS ESTADOS FINALES
+            codeLines.Add("int[] final_states = {" + finalStates() + "};" ); //AGREGAR LOS ESTADOS FINALES
             codeLines.Add("String command = \"\";");
 
             //AQUI VA EL WHILE PRINCIPAL (PODRIA MANDARSE A LLAMAR A UN MÉTODO QUE LO HAGA A PARTE)
@@ -453,5 +453,18 @@ namespace Scanner
             initialText = initialText3.Replace("\r", string.Empty); // elimina los retornos de carro
         }
 
+        string finalStates()
+        {
+            string states = "0,";
+            foreach (var item in expressionTree.transitions)
+            {
+                if (item.Value.IsFinalState)
+                {
+                    states += item.Value.StateNumber + ",";
+                }
+            }
+            states = states.Substring(0, states.Length - 1); //Eliminar la ultima coma
+            return states;
+        }
     }
 }
