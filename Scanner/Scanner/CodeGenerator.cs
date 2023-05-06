@@ -331,17 +331,36 @@ namespace Scanner
                     auxLine = "\t\t\t\t\t\tcase \"BLANK_SPACE\":{";
                     codeLines.Add(auxLine);
 
-                    int newState = expressionTree.tokenInformation[state.StateNumber + 1].TokenNumber;
-                    if (expressionTree.tokenInformation[newState].CallMethod)
+                    if (expressionTree.tokenInformation.ContainsKey(state.StateNumber + 1))
                     {
-                        auxLine = "\t\t\t\t\t\t\tSystem.out.println(" + expressionTree.tokenInformation[newState].Method + "(command, " + newState + "));";
-                        codeLines.Add(auxLine);
+                        int newState = expressionTree.tokenInformation[state.StateNumber + 1].TokenNumber;
+                        if (expressionTree.tokenInformation[newState].CallMethod)
+                        {
+                            auxLine = "\t\t\t\t\t\t\tSystem.out.println(" + expressionTree.tokenInformation[newState].Method + "(command, " + newState + "));";
+                            codeLines.Add(auxLine);
+                        }
+                        else
+                        {
+                            auxLine = "\t\t\t\t\t\t\tSystem.out.println(\"TOKEN " + state.StateNumber + "\");";
+                            codeLines.Add(auxLine);
+                        }
                     }
                     else
                     {
-                        auxLine = "\t\t\t\t\t\t\tSystem.out.println(\"TOKEN " + state.StateNumber + "\");";
-                        codeLines.Add(auxLine);
+                        int newState = expressionTree.tokenInformation[state.StateNumber].TokenNumber;
+                        if (expressionTree.tokenInformation[newState].CallMethod)
+                        {
+                            auxLine = "\t\t\t\t\t\t\tSystem.out.println(" + expressionTree.tokenInformation[newState].Method + "(command, " + newState + "));";
+                            codeLines.Add(auxLine);
+                        }
+                        else
+                        {
+                            auxLine = "\t\t\t\t\t\t\tSystem.out.println(\"TOKEN " + state.StateNumber + "\");";
+                            codeLines.Add(auxLine);
+                        }
                     }
+
+                    
 
                     auxLine = "\t\t\t\t\t\t\tactual_state = 0;";
                     codeLines.Add(auxLine);
