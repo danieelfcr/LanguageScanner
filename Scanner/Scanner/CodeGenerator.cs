@@ -69,11 +69,11 @@ namespace Scanner
         public void GenerateMainWhile()
         {
             string auxLine;
-            auxLine = "\t\tWhile (index < program.length()) {";
+            auxLine = "\t\twhile (index < program.length()) {";
             codeLines.Add(auxLine);
             auxLine = "\t\t\tchar lexeme = program.charAt(index);";
             codeLines.Add(auxLine);
-            auxLine = "\t\t\tString symbol = indentify_SET(lexeme);";
+            auxLine = "\t\t\tString symbol = identify_SET(lexeme);";
             codeLines.Add(auxLine);
             auxLine = "\t\t\tif (symbol.equals(\"\")) {";
             codeLines.Add(auxLine);
@@ -114,7 +114,21 @@ namespace Scanner
                     {
                         if (expressionTree.transitions[transition].Transition[symbol].Count > 0)
                         {
-                            auxLine = "\t\t\t\t\t\tcase \"" + symbol + "\":{";
+                            if (new Regex("'\\S'").IsMatch(symbol))
+                            {
+                                if (symbol[1].Equals('"'))
+                                {
+                                    auxLine = "\t\t\t\t\t\tcase \"\\" + symbol[1] + "\":{";
+                                }
+                                else
+                                {
+                                    auxLine = "\t\t\t\t\t\tcase \"" + symbol[1] + "\":{";
+                                }
+                            }
+                            else
+                            {
+                                auxLine = "\t\t\t\t\t\tcase \"" + symbol.Replace("'", string.Empty) + "\":{";
+                            }
                             codeLines.Add(auxLine);
                             string nextState = string.Join(',', expressionTree.transitions[transition].Transition[symbol]);
                             auxLine = "\t\t\t\t\t\t\tactual_state = " + expressionTree.transitions[nextState].StateNumber + ";";
@@ -137,7 +151,7 @@ namespace Scanner
 
                     auxLine = "\t\t\t\t\t\tdefault:{";
                     codeLines.Add(auxLine);
-                    auxLine = "\t\t\t\t\t\t\tSystem.out.println(\"Simbolo no reconocido\")";
+                    auxLine = "\t\t\t\t\t\t\tSystem.out.println(\"Simbolo no reconocido\");";
                     codeLines.Add(auxLine);
                     auxLine = "\t\t\t\t\t\t}break;";
                     codeLines.Add(auxLine);
@@ -159,7 +173,7 @@ namespace Scanner
                     foreach (KeyValuePair<int, TokenSummary> ss in expressionTree.tokenInformation)
                     {
                         string value = ss.Value.TokenValue;
-                        if (new Regex("('\\S|\\s')+").IsMatch(value))
+                        if (!new Regex("\\w\\w+").IsMatch(value))
                         {
                             int n = ss.Key;
                             auxLine = "\t\t\t\t\t\t\tif (command.equals(\"" + new Regex("'").Replace(value, string.Empty) + "\"))";
@@ -177,7 +191,7 @@ namespace Scanner
 
                     auxLine = "\t\t\t\t\t\tdefault:{";
                     codeLines.Add(auxLine);
-                    auxLine = "\t\t\t\t\t\t\tSystem.out.println(\"Simbolo no reconocido\")";
+                    auxLine = "\t\t\t\t\t\t\tSystem.out.println(\"Simbolo no reconocido\");";
                     codeLines.Add(auxLine);
                     auxLine = "\t\t\t\t\t\t}break;";
                     codeLines.Add(auxLine);
@@ -199,21 +213,42 @@ namespace Scanner
                         if (tt.Value.Count > 0)
                         {
                             string value = tt.Key;
-                            expected = new Regex("'").Replace(value, string.Empty) + " ";
-                            auxLine = "\t\t\t\t\t\tcase \"" + new Regex("'").Replace(value, string.Empty) + "\":{";
+
+                            if (new Regex("'\\S'").IsMatch(value))
+                            {
+                                if (value[1].Equals('"'))
+                                {
+                                    auxLine = "\t\t\t\t\t\tcase \"\\" + value[1] + "\":{";
+                                    expected += "\\" + value[1] + " ";
+                                }
+                                else
+                                {
+                                    auxLine = "\t\t\t\t\t\tcase \"" + value[1] + "\":{";
+                                    expected += value[1] + " ";
+                                }
+                            }
+                            else
+                            {
+                                auxLine = "\t\t\t\t\t\tcase \"" + value.Replace("'", string.Empty) + "\":{";
+                                expected += new Regex("'").Replace(value, string.Empty) + " ";
+                            }
+
                             codeLines.Add(auxLine);
 
                             int n = expressionTree.transitions[string.Join(',', tt.Value.ToArray())].StateNumber;
 
-                            auxLine = "\t\t\t\t\t\t\tactual state = " + n + ";";
+                            auxLine = "\t\t\t\t\t\t\tactual_state = " + n + ";";
                             codeLines.Add(auxLine);
                             auxLine = "\t\t\t\t\t\t\tcommand += lexeme;";
+                            codeLines.Add(auxLine);
+                            auxLine = "\t\t\t\t\t\t}break;";
+                            codeLines.Add(auxLine);
                         }
                     }
 
                     auxLine = "\t\t\t\t\t\tdefault:{";
                     codeLines.Add(auxLine);
-                    auxLine = "\t\t\t\t\t\t\tSystem.out.println(\"Se esperaba \" + \"" + expected + "\")";
+                    auxLine = "\t\t\t\t\t\t\tSystem.out.println(\"Se esperaba \" + \"" + expected + "\");";
                     codeLines.Add(auxLine);
                     auxLine = "\t\t\t\t\t\t}break;";
                     codeLines.Add(auxLine);
@@ -235,15 +270,36 @@ namespace Scanner
                         if (tt.Value.Count > 0)
                         {
                             string value = tt.Key;
-                            expected = value + " ";
-                            auxLine = "\t\t\t\t\t\tcase \"" + new Regex("'").Replace(value, string.Empty) + "\":{";
+                            
+                            if (new Regex("'\\S'").IsMatch(value))
+                            {
+                                if (value[1].Equals("\""))
+                                {
+                                    auxLine = "\t\t\t\t\t\tcase \"\\" + value[1] + "\":{";
+                                }
+                                else
+                                {
+                                    auxLine = "\t\t\t\t\t\tcase \"" + value[1] + "\":{";
+                                }
+                                expected += value[1] + " ";
+
+                            }
+                            else
+                            {
+                                auxLine = "\t\t\t\t\t\tcase \"" + value.Replace("'", string.Empty) + "\":{";
+                                expected += value.Replace("'", string.Empty) + " ";
+                            }
+
                             codeLines.Add(auxLine);
 
                             int n = expressionTree.transitions[string.Join(',', tt.Value.ToArray())].StateNumber;
 
-                            auxLine = "\t\t\t\t\t\t\tactual state = " + n + ";";
+                            auxLine = "\t\t\t\t\t\t\tactual_state = " + n + ";";
                             codeLines.Add(auxLine);
                             auxLine = "\t\t\t\t\t\t\tcommand += lexeme;";
+                            codeLines.Add(auxLine);
+                            auxLine = "\t\t\t\t\t\t}break;";
+                            codeLines.Add(auxLine);
                         }
                     }
 
@@ -258,7 +314,7 @@ namespace Scanner
                     }
                     else
                     {
-                        auxLine = "\t\t\t\t\t\t\tSystem.out.println(\"TOKEN " + newState + "\")";
+                        auxLine = "\t\t\t\t\t\t\tSystem.out.println(\"TOKEN " + newState + "\");";
                         codeLines.Add(auxLine);
                     }
 
@@ -267,10 +323,11 @@ namespace Scanner
                     auxLine = "\t\t\t\t\t\t\tcommand = \"\";";
                     codeLines.Add(auxLine);
                     auxLine = "\t\t\t\t\t\t}break;";
+                    codeLines.Add(auxLine);
 
                     auxLine = "\t\t\t\t\t\tdefault:{";
                     codeLines.Add(auxLine);
-                    auxLine = "\t\t\t\t\t\t\tSystem.out.println(\"Se esperaba \" + \"" + expected + "\")";
+                    auxLine = "\t\t\t\t\t\t\tSystem.out.println(\"Se esperaba \" + \"" + expected + "\");";
                     codeLines.Add(auxLine);
                     auxLine = "\t\t\t\t\t\t}break;";
                     codeLines.Add(auxLine);
@@ -304,8 +361,13 @@ namespace Scanner
 
         public void GenerateIsFinalState()
         {
-            /*AGREGAR EL CÓDIGO QUE ESCRIBA LA FUNCIÓN ISFINALSTATE EN CÓDIGO JAVA 
-              AGREGÁNDOLE A LA VARIABLE CODELINES LAS LÍNEAS DE CÓDIGO */
+            codeLines.Add("\tstatic boolean isFinalState(int state, int[] final_states) {");
+            codeLines.Add("\t\tfor (int i = 0; i < final_states.length; i++) {");
+            codeLines.Add("\t\t\tif (final_states[i] == state)");
+            codeLines.Add("\t\t\t\treturn true;");
+            codeLines.Add("\t\t}");
+            codeLines.Add("\t\treturn false;");
+            codeLines.Add("\t}\n");
         }
 
         /// <summary>
@@ -363,8 +425,6 @@ namespace Scanner
             if (modifiedText[0].Contains("SETS"))
             {
 
-                //string[] sets = { "LETRA='A'..'Z'+'a'..'z'+'_'", "DIGITO  = '0'..'9'", "SIMBOL='%'" };
-
                 codeLines.Add("\nstatic String identify_SET(char lexeme) {"); //Inicia funcion de SETS
                 codeLines.Add("\tint lexeme_value = (int)lexeme;");
 
@@ -387,12 +447,20 @@ namespace Scanner
                             conjuntosSet[j] = conjuntosSet[j].Replace("..", "$");
                             string[] limites = conjuntosSet[j].Split('$');
 
-                            codeLines.Add("\tint " + nombreSet + j + "_INFERIOR = (int)" + limites[0] + ";");
-                            codeLines.Add("\tint " + nombreSet + j + "_SUPERIOR = (int)" + limites[1] + ";");
-
-                            codeLines.Add("\tif (lexeme_value >= " + nombreSet + j + "_INFERIOR  && lexeme_value <= " + nombreSet + j + "_SUPERIOR)");
-                            codeLines.Add("\t\treturn \"" + nombreSet + "\";");
-
+                            if (nombreSet.Contains("CHARSET"))
+                            {
+                                codeLines.Add("\tint " + nombreSet + j + "_INFERIOR = " + new Regex("[0-9]+").Match(limites[0]).Value + ";");
+                                codeLines.Add("\tint " + nombreSet + j + "_SUPERIOR = " + new Regex("[0-9]+").Match(limites[1]).Value + ";");
+                                codeLines.Add("\tif (lexeme_value >= " + nombreSet + j + "_INFERIOR  && lexeme_value <= " + nombreSet + j + "_SUPERIOR && lexeme_value != 32)");
+                                codeLines.Add("\t\treturn \"" + nombreSet + "\";");
+                            }
+                            else
+                            {
+                                codeLines.Add("\tint " + nombreSet + j + "_INFERIOR = (int)" + limites[0] + ";");
+                                codeLines.Add("\tint " + nombreSet + j + "_SUPERIOR = (int)" + limites[1] + ";");
+                                codeLines.Add("\tif (lexeme_value >= " + nombreSet + j + "_INFERIOR  && lexeme_value <= " + nombreSet + j + "_SUPERIOR)");
+                                codeLines.Add("\t\treturn \"" + nombreSet + "\";");
+                            }
                         }
                         else //Es valor unico 
                         {
@@ -406,7 +474,8 @@ namespace Scanner
                     }
 
                 }
-                codeLines.Add("}");
+                codeLines.Add("\treturn \"\";");
+                codeLines.Add("\t}");
             }
         }
 
@@ -432,13 +501,13 @@ namespace Scanner
                     string num = new Regex("[1-9][0-9]*").Match(acToken).Value;
                     string word = new Regex("[A-Za-z]+").Match(acToken).Value;
 
-                    auxLine = "\t\tif (command.equalsIsIgnoreCase(\"" + word + "\"))";
+                    auxLine = "\t\tif (command.equalsIgnoreCase(\"" + word + "\"))";
                     codeLines.Add(auxLine);
                     auxLine = "\t\t\treturn \"TOKEN " + num + "\";";
                     codeLines.Add(auxLine);
                 }
 
-                auxLine = "\t\treturn \"TOKEN \" + state.toString();";
+                auxLine = "\t\treturn \"TOKEN \" + Integer.toString(state);";
                 codeLines.Add(auxLine);
                 auxLine = "\t}";
                 codeLines.Add(auxLine);
