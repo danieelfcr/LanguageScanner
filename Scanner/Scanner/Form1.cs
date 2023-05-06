@@ -30,7 +30,7 @@ namespace Scanner
                 MessageBox.Show("File was uploaded succesfully!");
                 rTBResult.Text = text;
                 rTBResult.BackColor = Color.White;
-                fileName = Path.GetFileNameWithoutExtension(openFileDialog1.FileName);
+                fileName = Path.GetFileNameWithoutExtension(openFileDialog1.FileName).Replace(" ", "_");
             }
         }
 
